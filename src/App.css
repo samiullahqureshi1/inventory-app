@@ -1,7 +1,13 @@
 .App {
   text-align: center;
 }
-
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #1e293b; /* Matches the dark background in the image */
+  color: #e2e8f0; /* Light text color for better contrast */
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -21,7 +27,7 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  background: #242b37;
 }
 
 .App-link {
@@ -36,3 +42,5 @@
     transform: rotate(360deg);
   }
 }
+
+

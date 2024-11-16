@@ -1,0 +1,113 @@
+/* Main container */
+.auth-container {
+    width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #1d1f27;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    transition: height 0.5s ease-in-out; /* Smooth transition for height change */
+}
+
+/* Header (tabs) */
+.auth-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #2b2e38;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 10px 0;
+    text-align: center;
+    cursor: pointer;
+    font-size: 18px;
+    background: transparent;
+    border: none;
+    color: #b0b0b0;
+    transition: all 0.3s;
+}
+
+.auth-tab.active-tab {
+    color: white;
+    font-weight: bold;
+    border-bottom: 3px solid #3d91f4;
+}
+
+/* Sliding Forms */
+.auth-body {
+    position: relative;
+    height: 100%;
+    overflow: hidden; /* Prevent overflow when sliding */
+}
+
+.auth-slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 200%; /* Both forms occupy 200% of the width */
+}
+
+.auth-form {
+    width: 50%; /* Each form occupies 50% of the slider */
+    padding: 10px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.auth-form h2 {
+    margin-bottom: 10px;
+    font-size: 22px;
+    text-align: center;
+}
+
+input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #b0b0b0;
+    border-radius: 20px;  /* Rounded corners */
+    background-color: #2b2e38;
+    color: white;
+}
+
+.auth-button {
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    background-color: #3d91f4;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.auth-button:hover {
+    background-color: #357ae8;
+}
+
+/* Additional Styles */
+input:focus {
+    outline: none;
+    border-color: #3d91f4;
+}
+
+
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  
+  .success-message {
+    color: green;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  
