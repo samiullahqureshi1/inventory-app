@@ -11,7 +11,7 @@ const Inventory = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:4000/product/get_product');
+        const response = await fetch('https://inventory-app-b.vercel.app/product/get_product');
         const text = await response.text();  // Read the raw response as text
         console.log(text); // Log the raw response
     
