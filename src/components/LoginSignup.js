@@ -24,7 +24,7 @@ const LoginSignup = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/auth/signIn', {
+      const response = await fetch('https://inventory-app-b.vercel.app/user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const LoginSignup = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/auth/signUp', {
+      const response = await fetch('https://inventory-app-b.vercel.app/user/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
