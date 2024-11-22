@@ -383,7 +383,7 @@ select {
   
   .three-dots {
     cursor: pointer;
-    font-size: 24px;
+    font-size: 35px;
     color: white;
   }
   
@@ -406,6 +406,7 @@ select {
     padding: 8px;
     cursor: pointer;
     text-align: left;
+    border-bottom: 1px solid rgb(198, 197, 197);
   }
   
   .options-box button:hover {

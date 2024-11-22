@@ -73,10 +73,31 @@ const Inventory = () => {
     // Implement edit functionality here
   };
 
-  const handleDelete = (productId) => {
-    console.log("Delete product", productId);
-    // Implement delete functionality here
-  };
+  const handleDelete = async (productId) => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+  if (!confirmDelete) return;
+
+  try {
+    const response = await fetch(`https://inventory-app-b.vercel.app/product/${productId}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      setProducts((prev) => prev.filter((product) => product._id !== productId)); // Update UI
+      setAlertType("success");
+      setAlertMessage("Product successfully deleted.");
+    } else {
+      const data = await response.json();
+      setAlertType("error");
+      setAlertMessage(data.message || "Failed to delete product.");
+    }
+  } catch (error) {
+    setAlertType("error");
+    setAlertMessage("Error deleting product. Please try again.");
+  } finally {
+    setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
+  }
+};
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -119,6 +140,12 @@ const Inventory = () => {
   return (
     <div>
       {/* Navbar */}
+      {alertMessage && (
+  <div className={`alert ${alertType}`}>
+    {alertMessage}
+  </div>
+)}
+
       <div className="navbar-containers">
         <h2 className="navbar-headings">Inventory</h2>
         <div className="navbar-link">
@@ -287,6 +314,14 @@ const Inventory = () => {
                       type="file"
                       multiple
                       onChange={handleImageChange}
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid #242b37',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        marginBottom: '10px',
+                      }}
                     />
                   </div>
                   <div className="form-actions">
