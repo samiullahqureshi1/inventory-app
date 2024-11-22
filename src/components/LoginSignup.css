@@ -1,5 +1,6 @@
 /* Main container */
 .auth-container {
+    max-width: 90%; /* Ensure it scales down on smaller screens */
     width: 400px;
     margin: 50px auto;
     padding: 20px;
@@ -70,7 +71,7 @@ input {
     padding: 10px;
     font-size: 16px;
     border: 1px solid #b0b0b0;
-    border-radius: 20px;  /* Rounded corners */
+    border-radius: 20px; /* Rounded corners */
     background-color: #2b2e38;
     color: white;
 }
@@ -97,17 +98,56 @@ input:focus {
     border-color: #3d91f4;
 }
 
-
-
 .error-message {
     color: red;
     font-size: 14px;
     margin-top: 10px;
-  }
-  
-  .success-message {
+}
+
+.success-message {
     color: green;
     font-size: 14px;
     margin-top: 10px;
-  }
-  
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .auth-container {
+        width: 100%; /* Take full width of the screen */
+        padding: 15px;
+    }
+
+    .auth-form h2 {
+        font-size: 20px;
+    }
+
+    input, .auth-button {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .auth-tab {
+        font-size: 16px;
+        padding: 8px 0;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .auth-container {
+        margin: 20px auto;
+        padding: 10px;
+    }
+
+    .auth-form h2 {
+        font-size: 18px;
+    }
+
+    input, .auth-button {
+        font-size: 14px;
+        padding: 7px;
+    }
+
+    .auth-tab {
+        font-size: 14px;
+    }
+}

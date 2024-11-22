@@ -15,6 +15,7 @@ function App() {
           <Route path="/" element={<LoginSignup />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/raw-material" element={<RawMaterial />} />
+          
 
         </Routes>
       </div>
