@@ -511,10 +511,10 @@ const Inventory = () => {
                     />
                   </div>
                   <div className="form-actions">
-                    <button className="btn submit" type="submit">
+                    <button className="btn-submit" type="submit">
                       Add Product
                     </button>
-                    <button className="btn cancel" type="button" onClick={toggleModal}>
+                    <button className="btn-cancel" type="button" onClick={toggleModal}>
                       Cancel
                     </button>
                   </div>

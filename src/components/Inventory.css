@@ -412,3 +412,11 @@ select {
     background-color: #f1f1f1;
   }
   
+  .btn-submit,.btn-cancel{
+    padding: 12px;
+    background-color: rgb(47, 86, 47);
+    cursor: pointer;
+    margin-left: 12px;
+    width: 100px;
+  }
+  
