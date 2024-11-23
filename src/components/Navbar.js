@@ -49,6 +49,9 @@ const Navbar = () => {
     Raw Material
   </Link>
 </li>
+<li>
+              <Link to="/out-of-stock" style={{ color: 'white', textDecoration: 'none' }}>Out of Stock</Link>
+            </li>
 
           </ul>
         </div>

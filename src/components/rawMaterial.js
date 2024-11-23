@@ -1,29 +1,46 @@
 import React, { useState, useEffect } from "react";
-import "./material.css";
+import "./Inventory.css";
 import { Link } from "react-router-dom";
 
 const RawMaterial = () => {
-  const [products, setProducts] = useState([]); // State to store products
-  const [loading, setLoading] = useState(true); // Loading state
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [imagePreviews, setImagePreviews] = useState([]); // State for storing multiple image previews
-  // Fetch out-of-stock products from the API
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [formLoading, setFormLoading] = useState(false); // Loader for form submission
+  const [alertMessage, setAlertMessage] = useState(null);
+  const [alertType, setAlertType] = useState(""); // 'success' or 'error'
+  const [isEditing, setIsEditing] = useState(false); // Track if editing a product
+
+  const [activeProduct, setActiveProduct] = useState(null); // Track the active product for options
+  const [formData, setFormData] = useState({
+    product_name: "", // Corrected field name
+    quantity: 0,      // Corrected field name
+    price: 0,
+    discription: "",  // Corrected field name
+    category:"",
+    images: []
+  });
+
   useEffect(() => {
-    const fetchOutOfStockProducts = async () => {
+    const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/product/get_product"); // Replace with your API endpoint
-        const data = await response.json(); // Parse the JSON response
-        if (data.success) {
-          setProducts(data.data); // Set products state with out-of-stock products
-        }
-        setLoading(false); // Set loading to false after fetching data
+        const response = await fetch('https://inventory-app-b.vercel.app/product/get_product_raw');
+        const text = await response.text();
+        console.log(text);
+
+        const data = JSON.parse(text);
+        console.log(data);
+
+        setProducts(data.data);
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching out-of-stock products:", error);
+        console.error('Error fetching products:', error);
         setLoading(false);
       }
     };
 
-    fetchOutOfStockProducts();
+    fetchProducts();
   }, []);
 
   const toggleModal = () => {
@@ -31,7 +48,6 @@ const RawMaterial = () => {
     setImagePreviews([]); // Clear previews when closing or opening the modal
   };
 
-  //..........image preview
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     const previews = [];
@@ -42,34 +58,147 @@ const RawMaterial = () => {
         previews.push(reader.result);
         if (previews.length === files.length) {
           setImagePreviews((prev) => [...prev, ...previews]);
+          setFormData((prev) => ({ ...prev, images: files }));
         }
       };
       reader.readAsDataURL(file);
     });
   };
 
+  // Toggle the options visibility for a specific product
+  const handleOptionsToggle = (productId) => {
+    setActiveProduct(activeProduct === productId ? null : productId); // Toggle visibility
+  };
 
+  // Handle edit and delete (you can define actual functionality for these)
+  const handleEdit = (productId) => {
+    const productToEdit = products.find((product) => product._id === productId);
+    if (!productToEdit) return;
+
+    setFormData({
+      product_name: productToEdit.product_name || "",
+      quantity: productToEdit.quantity || 0,
+      price: productToEdit.price || 0,
+      discription: productToEdit.discription || "",
+      category:productToEdit.category || '',
+      images: [] // No need to populate images, as they aren't directly editable
+    });
+
+    setImagePreviews(productToEdit.images || []);
+    setIsEditing(true); // Set editing mode
+    setActiveProduct(productId); // Close the options box
+    toggleModal();
+  };
+
+
+  const handleDelete = async (productId) => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+  if (!confirmDelete) return;
+
+  try {
+    const response = await fetch(`https://inventory-app-b.vercel.app/product/raw_product${productId}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      setProducts((prev) => prev.filter((product) => product._id !== productId)); // Update UI
+      setAlertType("success");
+      setAlertMessage("Product successfully deleted.");
+    } else {
+      const data = await response.json();
+      setAlertType("error");
+      setAlertMessage(data.message || "Failed to delete product.");
+    }
+  } catch (error) {
+    setAlertType("error");
+    setAlertMessage("Error deleting product. Please try again.");
+  } finally {
+    setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
+  }
+};
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    const newProductData = new FormData();
+    newProductData.append("product_name", formData.product_name); // Corrected field name
+    newProductData.append("quantity", formData.quantity); // Corrected field name
+    newProductData.append("price", formData.price);
+    newProductData.append("discription", formData.discription); // Corrected field name
+    newProductData.append("category", formData.category); // Corrected field name
+
+    // Append images to FormData
+    formData.images.forEach((image) => {
+      newProductData.append("images", image);
+    });
+
+    try {
+      const response = isEditing
+        ? await fetch(
+            `https://inventory-app-b.vercel.app/product/update_product_raw/${activeProduct}`, // Use product ID in URL
+            {
+              method: "PATCH",
+              body: newProductData,
+            }
+          )
+        : await fetch("https://inventory-app-b.vercel.app/product/create_product_raw", {
+            method: "POST",
+            body: newProductData,
+          });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setAlertType("success");
+        setAlertMessage(isEditing ? "Product updated successfully!" : "Product added successfully!");
+        if (isEditing) {
+          // Update product in UI
+          setProducts((prev) =>
+            prev.map((product) =>
+              product._id === activeProduct ? { ...product, ...data.product } : product
+            )
+          );
+        } else {
+          // Add new product to UI
+          setProducts((prev) => [...prev, data.product]);
+        }
+        toggleModal();
+      } else {
+        setAlertType("error");
+        setAlertMessage(data.message || "Failed to submit form.");
+      }
+    } catch (error) {
+      setAlertType("error");
+      setAlertMessage("Error submitting form. Please try again.");
+    } finally {
+      setFormLoading(false);
+      setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
+    }
+  };
   return (
     <div>
       {/* Navbar */}
+      {alertMessage && (
+  <div className={`alert ${alertType}`}>
+    {alertMessage}
+  </div>
+)}
+
       <div className="navbar-containers">
         <h2 className="navbar-headings">Inventory</h2>
         <div className="navbar-link">
           <ul>
             <li>
-              <Link to="/dashboard" style={{ color: "white", textDecoration: "none" }}>
-                Dashboard
-              </Link>
+              <Link to="/dashboard" style={{ color: 'white', textDecoration: 'none' }}>Dashboard</Link>
             </li>
             <li>
-              <Link to="/inventory" style={{ color: "white", textDecoration: "none" }}>
-                Inventory
-              </Link>
+              <Link to="/inventory" style={{ color: 'white', textDecoration: 'none' }}>Inventory</Link>
             </li>
             <li>
-              <Link to="/raw-material" style={{ color: "white", textDecoration: "none" }}>
-                Raw Material
-              </Link>
+              <Link to="/raw-material" style={{ color: 'white', textDecoration: 'none' }}>Raw Material</Link>
+            </li>
+            <li>
+              <Link to="/out-of-stock" style={{ color: 'white', textDecoration: 'none' }}>Out of Stock</Link>
             </li>
           </ul>
         </div>
@@ -78,36 +207,71 @@ const RawMaterial = () => {
       {/* Dashboard Section */}
       <div className="dashboard-sections">
         <div className="product-infos">
-          <p className="product-titles">Out-of-Stock Products</p>
-          <span className="total-product">{products.length} total products</span>
+          <p className="product-titles">Raw Material</p>
+          <span className="total-product">{products.length} total material</span>
         </div>
-        <button className="add-products" onClick={toggleModal}>
-            Add Product
+        <div className="action">
+          <div className="search-bars">
+            <input type="text" placeholder="Search product..." />
+            <button className="search-icons">🔍</button>
+          </div>
+          <button className="add-products" onClick={toggleModal}>
+            Add Material
           </button>
+        </div>
       </div>
 
       {/* Product List Section */}
       <div className="product-list">
         {loading ? (
           <p>Loading products...</p>
+        ) : products.length === 0 ? (
+          <p>No Material found.</p>
         ) : (
           products.map((product) => (
             <div className="product-card" key={product._id}>
               <img
-                src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/50"}
+                src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/150"}
                 alt={product.product_name}
                 className="product-image"
               />
               <div className="product-details">
-                <h3>{product.product_name}</h3>
-                <p>{product.discription || "No description available"}</p>
-                <p>{product.in_stock ? "In Stock" : "Out of Stock"}</p>
+                <h3 className="product-name">{product.product_name || "Unnamed Product"}</h3>
+                <div className="product-info">
+                  <span className="product-description">{product.discription || "No description available"}</span>
+                  <span className="product-description">{product.category || "No category available"}</span>
+
+                  <span className="product-status">
+                    <span style={{ color: product.in_stock ? "green" : "red" }}>
+                      {product.in_stock ? "In Stock" : "Out of Stock"}
+                    </span>
+                  </span>
+                  <span className="product-quantity">Quantity: {product.quantity || 0}</span>
+                  <span className="product-price">Price: ${product.price || "N/A"}</span>
+                </div>
+              </div>
+
+              {/* Three Dots Options */}
+              <div className="options-container">
+                <span
+                  className="three-dots"
+                  onClick={() => handleOptionsToggle(product._id)}
+                >
+                  ⋮
+                </span>
+                {activeProduct === product._id && (
+                  <div className="options-box">
+                    <button onClick={() => handleEdit(product._id)}>Edit</button>
+                    <button onClick={() => handleDelete(product._id)}>Delete</button>
+                  </div>
+                )}
               </div>
             </div>
           ))
         )}
       </div>
 
+      {/* Modal for Adding Product */}
       {showModal && (
         <div className="custom-modal-overlay">
           <div className="custom-modal-container">
@@ -115,40 +279,27 @@ const RawMaterial = () => {
               ✖
             </button>
             <div className="custom-modal-content">
-              {/* Left Section */}
               <div className="custom-modal-left">
                 <h2>Material Preview</h2>
                 <div className="custom-product-image-container">
                   <img
-                    src={imagePreviews[0] || "https://via.placeholder.com/150"} // Display the first image or a placeholder
+                    src={imagePreviews[0] || "https://via.placeholder.com/150"}
                     alt="Product Preview"
                     className="custom-product-image"
                   />
                 </div>
-                <div className="custom-thumbnail-container">
-                  {imagePreviews.map((img, index) => (
-                    <img
-                      key={index}
-                      src={img}
-                      alt={`Thumbnail ${index + 1}`}
-                      className="custom-thumbnail"
-                      onClick={() =>
-                        setImagePreviews((prev) => [img, ...prev.filter((_, i) => i !== index)])
-                      }
-                    />
-                  ))}
-                </div>
               </div>
 
-              {/* Right Section */}
               <div className="custom-modal-right">
-                <h2>Add Material</h2>
-                <form>
+              <h2>{isEditing ? "Edit Product" : "Add Product"}</h2>
+                <form onSubmit={handleFormSubmit}>
                   <div className="custom-form-group">
                     <label>Material Name</label>
                     <input
                       type="text"
-                      placeholder="Enter product name"
+                      placeholder="Enter material name"
+                      value={formData.product_name} // Corrected field name
+                      onChange={(e) => setFormData({ ...formData, product_name: e.target.value })}
                       style={{
                         width: '100%',
                         padding: '8px',
@@ -160,25 +311,12 @@ const RawMaterial = () => {
                     />
                   </div>
                   <div className="custom-form-group">
-                    <label>Supplier Name</label>
+                    <label>Category</label>
                     <input
                       type="text"
                       placeholder="Enter category"
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        border: '1px solid #242b37',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        marginBottom: '10px',
-                      }}
-                    />
-                  </div>
-                  <div className="custom-form-group">
-                    <label>Stock Quantity</label>
-                    <input
-                      type="number"
-                      placeholder="Enter stock quantity"
+                      value={formData.category} // Corrected field name
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                       style={{
                         width: '100%',
                         padding: '8px',
@@ -190,10 +328,12 @@ const RawMaterial = () => {
                     />
                   </div>
                   {/* <div className="custom-form-group">
-                    <label>Price</label>
+                    <label>Material ID</label>
                     <input
                       type="number"
-                      placeholder="Enter price"
+                      // placeholder="Enter material id"
+                      value={formData.product_name} // Corrected field name
+                      onChange={(e) => setFormData({ ...formData, product_name: e.target.value })}
                       style={{
                         width: '100%',
                         padding: '8px',
@@ -205,11 +345,27 @@ const RawMaterial = () => {
                     />
                   </div> */}
                   <div className="custom-form-group">
-                    <label>Upload Image</label>
+                    <label>Quantity</label>
                     <input
-                      type="file"
-                      onChange={handleImageChange}
-                      multiple // Allow multiple files
+                      type="number"
+                      value={formData.quantity}
+                      onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid #242b37',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  </div>
+                  <div className="custom-form-group">
+                    <label>Price</label>
+                    <input
+                      type="number"
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                       style={{
                         width: '100%',
                         padding: '8px',
@@ -223,14 +379,36 @@ const RawMaterial = () => {
                   <div className="custom-form-group">
                     <label>Description</label>
                     <textarea
-                      placeholder="Enter product description"
-                      rows="4"
+                      value={formData.discription}
+                      onChange={(e) => setFormData({ ...formData, discription: e.target.value })}
+                       rows="4"
                       className="custom-textarea"
                     />
                   </div>
-                  <button type="submit" className="custom-save-button">
-                    Save 
-                  </button>
+                  <div className="custom-form-group">
+                    <label>Images</label>
+                    <input
+                      type="file"
+                      multiple
+                      onChange={handleImageChange}
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid #242b37',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  </div>
+                  <div className="form-actions">
+                  <button className="btn-submit" type="submit" enable={formLoading}>
+                  {formLoading ? "Submitting..." : isEditing ? "Update Product" : "Add Product"}
+              </button>
+                    <button className="btn-cancel" type="button" onClick={toggleModal}>
+                      Cancel
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>
@@ -242,3 +420,6 @@ const RawMaterial = () => {
 };
 
 export default RawMaterial;
+
+
+

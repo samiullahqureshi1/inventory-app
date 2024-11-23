@@ -5,6 +5,7 @@ import LoginSignup from './components/LoginSignup';
 import Inventory from './components/inventory';
 import './App.css';
 import RawMaterial from './components/rawMaterial';
+import OutStock from './components/OutOfStock';
 function App() {
   return (
     <Router>
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<LoginSignup />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/raw-material" element={<RawMaterial />} />
+          <Route path="/out-of-stock" element={<OutStock />} />
           
 
         </Routes>
