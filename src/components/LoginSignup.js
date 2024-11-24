@@ -4,6 +4,7 @@ import "./LoginSignup.css";
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [alertMessage, setAlertMessage] = useState(null);
 
   // State variables for form inputs
   const [userName, setUserName] = useState('');
@@ -46,6 +47,8 @@ const LoginSignup = () => {
       }
     } catch (error) {
       setError("An error occurred. Please try again.");
+    }finally {
+      setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
     }
   };
 
@@ -76,6 +79,8 @@ const LoginSignup = () => {
       }
     } catch (error) {
       setError("An error occurred. Please try again.");
+    }finally {
+      setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
     }
   };
 

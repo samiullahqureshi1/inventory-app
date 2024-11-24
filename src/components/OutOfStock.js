@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useEffect } from "react";
 import "./Inventory.css";
 import { Link } from "react-router-dom";
@@ -20,6 +17,7 @@ const OutStock = () => {
     product_name: "", // Corrected field name
     quantity: 0,      // Corrected field name
     price: 0,
+    category:"",
     discription: "",  // Corrected field name
     images: []
   });
@@ -45,14 +43,52 @@ const OutStock = () => {
     fetchProducts();
   }, []);
 
-  
+  const toggleModal = () => {
+    setShowModal((prev) => !prev);
+    setImagePreviews([]); // Clear previews when closing or opening the modal
+  };
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const previews = [];
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        previews.push(reader.result);
+        if (previews.length === files.length) {
+          setImagePreviews((prev) => [...prev, ...previews]);
+          setFormData((prev) => ({ ...prev, images: files }));
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   // Toggle the options visibility for a specific product
   const handleOptionsToggle = (productId) => {
     setActiveProduct(activeProduct === productId ? null : productId); // Toggle visibility
   };
 
   // Handle edit and delete (you can define actual functionality for these)
-  
+  const handleEdit = (productId) => {
+    const productToEdit = products.find((product) => product._id === productId);
+    if (!productToEdit) return;
+
+    setFormData({
+      product_name: productToEdit.product_name || "",
+      quantity: productToEdit.quantity || 0,
+      price: productToEdit.price || 0,
+      category:productToEdit.category || "",
+      discription: productToEdit.discription || "",
+      images: [] // No need to populate images, as they aren't directly editable
+    });
+
+    setImagePreviews(productToEdit.images || []);
+    setIsEditing(true); // Set editing mode
+    setActiveProduct(productId); // Close the options box
+    toggleModal();
+  };
 
 
   const handleDelete = async (productId) => {
@@ -81,7 +117,64 @@ const OutStock = () => {
   }
 };
 
-  
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    const newProductData = new FormData();
+    newProductData.append("product_name", formData.product_name); // Corrected field name
+    newProductData.append("quantity", formData.quantity); // Corrected field name
+    newProductData.append("price", formData.price);
+    newProductData.append("discription", formData.discription); // Corrected field name
+    newProductData.append("category", formData.category); // Corrected field name
+
+    // Append images to FormData
+    formData.images.forEach((image) => {
+      newProductData.append("images", image);
+    });
+
+    try {
+      const response = isEditing
+        ? await fetch(
+            `https://inventory-app-b.vercel.app/product/update_product/${activeProduct}`, // Use product ID in URL
+            {
+              method: "PATCH",
+              body: newProductData,
+            }
+          )
+        : await fetch("https://inventory-app-b.vercel.app/product/create_product", {
+            method: "POST",
+            body: newProductData,
+          });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setAlertType("success");
+        setAlertMessage(isEditing ? "Product updated successfully!" : "Product added successfully!");
+        if (isEditing) {
+          // Update product in UI
+          setProducts((prev) =>
+            prev.map((product) =>
+              product._id === activeProduct ? { ...product, ...data.product } : product
+            )
+          );
+        } else {
+          // Add new product to UI
+          setProducts((prev) => [...prev, data.product]);
+        }
+        toggleModal();
+      } else {
+        setAlertType("error");
+        setAlertMessage(data.message || "Failed to submit form.");
+      }
+    } catch (error) {
+      setAlertType("error");
+      setAlertMessage("Error submitting form. Please try again.");
+    } finally {
+      setFormLoading(false);
+      setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
+    }
+  };
   return (
     <div>
       {/* Navbar */}
@@ -114,8 +207,17 @@ const OutStock = () => {
       {/* Dashboard Section */}
       <div className="dashboard-sections">
         <div className="product-infos">
-          <p className="product-titles">Out-Of-Stock</p>
+          <p className="product-titles">Product</p>
           <span className="total-product">{products.length} total products</span>
+        </div>
+        <div className="action">
+          {/* <div className="search-bars">
+            <input type="text" placeholder="Search product..." />
+            <button className="search-icons">🔍</button>
+          </div> */}
+          {/* <button className="add-products" onClick={toggleModal}>
+            Add Product
+          </button> */}
         </div>
       </div>
 
@@ -137,6 +239,8 @@ const OutStock = () => {
                 <h3 className="product-name">{product.product_name || "Unnamed Product"}</h3>
                 <div className="product-info">
                   <span className="product-description">{product.discription || "No description available"}</span>
+                  <span className="product-description">{product.category || "No category available"}</span>
+
                   <span className="product-status">
                     <span style={{ color: product.in_stock ? "green" : "red" }}>
                       {product.in_stock ? "In Stock" : "Out of Stock"}
@@ -157,7 +261,7 @@ const OutStock = () => {
                 </span>
                 {activeProduct === product._id && (
                   <div className="options-box">
-                  
+                    <button onClick={() => handleEdit(product._id)}>Edit</button>
                     <button onClick={() => handleDelete(product._id)}>Delete</button>
                   </div>
                 )}
@@ -167,9 +271,134 @@ const OutStock = () => {
         )}
       </div>
 
-     
+      {/* Modal for Adding Product */}
+      {showModal && (
+        <div className="custom-modal-overlay">
+          <div className="custom-modal-container">
+            <button className="custom-modal-close" onClick={toggleModal}>
+              ✖
+            </button>
+            <div className="custom-modal-content">
+              <div className="custom-modal-left">
+                <h2>Product Preview</h2>
+                <div className="custom-product-image-container">
+                  <img
+                    src={imagePreviews[0] || "https://via.placeholder.com/150"}
+                    alt="Product Preview"
+                    className="custom-product-image"
+                  />
+                </div>
+              </div>
+
+              <div className="custom-modal-right">
+              <h2>{isEditing ? "Edit Product" : "Add Product"}</h2>
+                <form onSubmit={handleFormSubmit}>
+                  <div className="custom-form-group">
+                    <label>Product Name</label>
+                    <input
+                      type="text"
+                      placeholder="Enter product name"
+                      value={formData.product_name} // Corrected field name
+                      onChange={(e) => setFormData({ ...formData, product_name: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid #242b37',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  </div>
+                  <div className="custom-form-group">
+                    <label>Product Category</label>
+                    <input
+                      type="text"
+                      placeholder="Enter category"
+                      value={formData.category} // Corrected field name
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid #242b37',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  </div>
+                  <div className="custom-form-group">
+                    <label>Quantity</label>
+                    <input
+                      type="number"
+                      value={formData.quantity}
+                      onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid #242b37',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  </div>
+                  <div className="custom-form-group">
+                    <label>Price</label>
+                    <input
+                      type="number"
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid #242b37',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  </div>
+                  <div className="custom-form-group">
+                    <label>Description</label>
+                    <textarea
+                      value={formData.discription}
+                      onChange={(e) => setFormData({ ...formData, discription: e.target.value })}
+                       rows="4"
+                      className="custom-textarea"
+                    />
+                  </div>
+                  <div className="custom-form-group">
+                    <label>Images</label>
+                    <input
+                      type="file"
+                      multiple
+                      onChange={handleImageChange}
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid #242b37',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  </div>
+                  <div className="form-actions">
+                  <button className="btn-submit" type="submit" enable={formLoading}>
+                  {formLoading ? "Submitting..." : isEditing ? "Update Product" : "Add Product"}
+              </button>
+                    <button className="btn-cancel" type="button" onClick={toggleModal}>
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
-     
+      )}
+    </div>
   );
 };
 

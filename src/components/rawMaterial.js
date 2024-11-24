@@ -11,6 +11,7 @@ const RawMaterial = () => {
   const [alertMessage, setAlertMessage] = useState(null);
   const [alertType, setAlertType] = useState(""); // 'success' or 'error'
   const [isEditing, setIsEditing] = useState(false); // Track if editing a product
+  const [isOpen, setIsOpen] = useState(false);
 
   const [activeProduct, setActiveProduct] = useState(null); // Track the active product for options
   const [formData, setFormData] = useState({
@@ -21,7 +22,9 @@ const RawMaterial = () => {
     category:"",
     images: []
   });
-
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -96,7 +99,7 @@ const RawMaterial = () => {
   if (!confirmDelete) return;
 
   try {
-    const response = await fetch(`https://inventory-app-b.vercel.app/product/raw_product${productId}`, {
+    const response = await fetch(`https://inventory-app-b.vercel.app/product/raw_product/${productId}`, {
       method: "DELETE",
     });
 
@@ -183,12 +186,17 @@ const RawMaterial = () => {
     {alertMessage}
   </div>
 )}
-
-      <div className="navbar-containers">
-        <h2 className="navbar-headings">Inventory</h2>
-        <div className="navbar-link">
-          <ul>
-            <li>
+<div className="navbar-containers">
+      <h2 className="navbar-headings">Inventory</h2>
+      <div className="hamburger" onClick={toggleMenu}>
+        {/* Hamburger icon */}
+        <span className={`bar ${isOpen ? 'open' : ''}`}></span>
+        <span className={`bar ${isOpen ? 'open' : ''}`}></span>
+        <span className={`bar ${isOpen ? 'open' : ''}`}></span>
+      </div>
+      <div className={`navbar-link ${isOpen ? 'open' : ''}`}>
+        <ul>
+        <li>
               <Link to="/dashboard" style={{ color: 'white', textDecoration: 'none' }}>Dashboard</Link>
             </li>
             <li>
@@ -200,9 +208,9 @@ const RawMaterial = () => {
             <li>
               <Link to="/out-of-stock" style={{ color: 'white', textDecoration: 'none' }}>Out of Stock</Link>
             </li>
-          </ul>
-        </div>
+        </ul>
       </div>
+    </div>
 
       {/* Dashboard Section */}
       <div className="dashboard-sections">

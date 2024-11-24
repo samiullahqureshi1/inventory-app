@@ -1,35 +1,39 @@
-import React, { useState } from "react";
+
+
+import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import "./Navbar.css"; // Import CSS file for styling
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const Navbar = () => {
-  const allProducts = [
-    { id: 1, title: "Adidas ORKETRO SHOES Blue 36", variants: "6 variants", category: "Man Shoes", stock: "120 in stock", img: "https://via.placeholder.com/50" },
-    { id: 2, title: "Adidas ULTRABOOST 1.0 DNA Running Speed", variants: "6 variants", category: "Man Shoes", stock: "820 in stock", img: "https://via.placeholder.com/50" },
-    { id: 3, title: "Adidas ADICOLOR SST TRACK JACKET", variants: "6 variants", category: "Man Shoes", stock: "120 in stock", img: "https://via.placeholder.com/50" },
-    { id: 4, title: "Adidas Stan Smith Sneakers", variants: "4 variants", category: "Unisex Shoes", stock: "200 in stock", img: "https://via.placeholder.com/50" },
-    { id: 5, title: "Nike Air Max 270", variants: "5 variants", category: "Man Shoes", stock: "150 in stock", img: "https://via.placeholder.com/50" },
-    { id: 6, title: "Puma RS-X Bold", variants: "3 variants", category: "Unisex Shoes", stock: "300 in stock", img: "https://via.placeholder.com/50" },
-    { id: 7, title: "Reebok Club C 85", variants: "2 variants", category: "Man Shoes", stock: "100 in stock", img: "https://via.placeholder.com/50" },
-    { id: 8, title: "Adidas ZX 2K Boost", variants: "4 variants", category: "Man Shoes", stock: "180 in stock", img: "https://via.placeholder.com/50" },
-  ];
+  const [loading, setLoading] = useState(true);
+
 
   // State to manage displayed products
-  const [products, setProducts] = useState(allProducts.slice(0, 3)); // Initially display 3 products
+  const [products, setProducts] = useState([]);
+
   const [hasMore, setHasMore] = useState(true);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('https://inventory-app-b.vercel.app/product/get_product');
+        const text = await response.text();
+        console.log(text);
 
-  // Function to load more products
-  const fetchMoreProducts = () => {
-    if (products.length >= allProducts.length) {
-      setHasMore(false); // Stop fetching if no more products
-      return;
-    }
+        const data = JSON.parse(text);
+        console.log(data);
 
-    // Simulate loading more products (add 3 more at a time)
-    const nextProducts = allProducts.slice(products.length, products.length + 3);
-    setProducts([...products, ...nextProducts]);
-  };
+        setProducts(data.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+  
 
   return (
     <div>
@@ -102,20 +106,32 @@ const Navbar = () => {
             </div>
           <InfiniteScroll
             dataLength={products.length}
-            next={fetchMoreProducts}
+            // next={fetchMoreProducts}
             hasMore={hasMore}
             loader={<h4 style={{ color: "white", textAlign: "center" }}>Loading...</h4>}
             endMessage={<p style={{ color: "white", textAlign: "center" }}>No more products to display!</p>}
           >
             {products.map((product) => (
-              <div className="product-card" key={product.id}>
-                <img src={product.img} alt={product.title} className="product-image" />
-                <div className="product-detailss">
-                  <h4 className="product-title">{product.title}</h4>
+              <div className="product-card" key={product._id}>
+                  <img
+                src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/150"}
+                alt={product.product_name}
+                className="product-image"
+              />
+                <div className="product-details">
+                  <h4 className="product-name">{product.product_name}</h4>
                   <p className="product-info">
-                    <span className="variant">{product.variants}</span>
-                    <span className="category">• {product.category}</span>
-                    <span className="stock">• {product.stock}</span>
+                    {/* <span className="variant">{product.variants}</span> */}
+                    <span className="product-description">{product.discription || "No description available"}</span>
+
+                    <span className="category"> {product.category || 'no category available'}</span>
+                    <span className="product-status">
+                    <span style={{ color: product.in_stock ? "green" : "red" }}>
+                      {product.in_stock ? "In Stock" : "Out of Stock"}
+                    </span>
+                  </span>
+                  <span className="product-quantity">Quantity: {product.quantity || 0}</span>
+                  <span className="product-price">Price: ${product.price || "N/A"}</span>
                   </p>
                 </div>
               </div>
@@ -142,7 +158,7 @@ const Navbar = () => {
             <span className="box-percentage">10.5%</span>
           </div>
           <div className="box-body">
-            <h3 className="box-title">TOTAL QUANTITY ON HAND</h3>
+            <h3 className="box-title">TOTAL RAW MATERIAL</h3>
             <p className="box-value">2,000,508</p>
           </div>
         </div>
@@ -152,7 +168,7 @@ const Navbar = () => {
             <span className="box-percentage">10.5%</span>
           </div>
           <div className="box-body">
-            <h3 className="box-title">TOTAL PRODUCT TO BE RECEIVED</h3>
+            <h3 className="box-title">TOTAL OUT OF STOCK PRODUCT</h3>
             <p className="box-value">5,680</p>
           </div>
         </div>
@@ -162,7 +178,7 @@ const Navbar = () => {
             <span className="box-percentage">10.5%</span>
           </div>
           <div className="box-body">
-            <h3 className="box-title">TOTAL BE PACKED</h3>
+            <h3 className="box-title">TOTAL HIGH STOCK PRODUCT</h3>
             <p className="box-value">878</p>
           </div>
         </div>
