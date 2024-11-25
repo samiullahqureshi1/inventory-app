@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Inventory.css";
 import { Link } from "react-router-dom";
 
-const Inventory = () => {
+const Sales = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -228,7 +228,7 @@ const Inventory = () => {
               <Link to="/out-of-stock" style={{ color: 'white', textDecoration: 'none' }}>Out of Stock</Link>
             </li>
             <li>
-              <Link to="/order" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link>
+              <Link to="/order" style={{ color: 'white', textDecoration: 'none' }}>Order</Link>
             </li>
         </ul>
       </div>
@@ -236,26 +236,26 @@ const Inventory = () => {
       {/* Dashboard Section */}
       <div className="dashboard-sections">
         <div className="product-infos">
-          <p className="product-titles">Product</p>
-          <span className="total-product">{products.length} total products</span>
+          <p className="product-titles">Order</p>
+          <span className="total-product">{products.length} total order</span>
         </div>
         <div className="action">
           <div className="search-bars">
             <input type="text" placeholder="Search product..." />
             <button className="search-icons">🔍</button>
           </div>
-          <button className="add-products" onClick={toggleModal}>
-            Add Product
-          </button>
+        <Link to={'/add-order'}> <button className="add-products" onClick={toggleModal}>
+            Add Order
+          </button></Link> 
         </div>
       </div>
 
       {/* Product List Section */}
       <div className="product-list">
         {loading ? (
-          <p>Loading products...</p>
+          <p>Loading orders...</p>
         ) : products.length === 0 ? (
-          <p>No products found.</p>
+          <p>No order found.</p>
         ) : (
           products.map((product) => (
             <div className="product-card" key={product._id}>
@@ -309,14 +309,14 @@ const Inventory = () => {
             </button>
             <div className="custom-modal-content">
               <div className="custom-modal-left">
-                <h2>Product Preview</h2>
-                <div className="custom-product-image-container">
+                {/* <h2>Product Preview</h2> */}
+                {/* <div className="custom-product-image-container">
                   <img
                     src={imagePreviews[0] || "https://via.placeholder.com/150"}
                     alt="Product Preview"
                     className="custom-product-image"
                   />
-                </div>
+                </div> */}
               </div>
 
               <div className="custom-modal-right">
@@ -339,7 +339,7 @@ const Inventory = () => {
                       }}
                     />
                   </div>
-                  <div className="custom-form-group">
+                  {/* <div className="custom-form-group">
                     <label>Product Category</label>
                     <input
                       type="text"
@@ -355,7 +355,7 @@ const Inventory = () => {
                         marginBottom: '10px',
                       }}
                     />
-                  </div>
+                  </div> */}
                   <div className="custom-form-group">
                     <label>Quantity</label>
                     <input
@@ -389,6 +389,22 @@ const Inventory = () => {
                     />
                   </div>
                   <div className="custom-form-group">
+                    <label>Discount</label>
+                    <input
+                      type="number"
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid #242b37',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  </div>
+                  {/* <div className="custom-form-group">
                     <label>Description</label>
                     <textarea
                       value={formData.discription}
@@ -396,8 +412,8 @@ const Inventory = () => {
                        rows="4"
                       className="custom-textarea"
                     />
-                  </div>
-                  <div className="custom-form-group">
+                  </div> */}
+                  {/* <div className="custom-form-group">
                     <label>Images</label>
                     <input
                       type="file"
@@ -412,10 +428,10 @@ const Inventory = () => {
                         marginBottom: '10px',
                       }}
                     />
-                  </div>
+                  </div> */}
                   <div className="form-actions">
                   <button className="btn-submit" type="submit" enable={formLoading}>
-                  {formLoading ? "Submitting..." : isEditing ? "Update Product" : "Add Product"}
+                  {formLoading ? "Submitting..." : isEditing ? "Update Order" : "Add Order  "}
               </button>
                     <button className="btn-cancel" type="button" onClick={toggleModal}>
                       Cancel
@@ -431,7 +447,7 @@ const Inventory = () => {
   );
 };
 
-export default Inventory;
+export default Sales;
 
 
 

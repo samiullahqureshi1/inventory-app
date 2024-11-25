@@ -56,7 +56,9 @@ const Navbar = () => {
 <li>
               <Link to="/out-of-stock" style={{ color: 'white', textDecoration: 'none' }}>Out of Stock</Link>
             </li>
-
+            <li>
+              <Link to="/order" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link>
+            </li>
           </ul>
         </div>
       </div>
