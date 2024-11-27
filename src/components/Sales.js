@@ -27,7 +27,7 @@ const Sales = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('https://inventory-app-b.vercel.app/product/get_product');
+        const response = await fetch('https://inventory-app-b.vercel.app/product/getorder');
         const text = await response.text();
         console.log(text);
 
@@ -259,24 +259,24 @@ const Sales = () => {
         ) : (
           products.map((product) => (
             <div className="product-card" key={product._id}>
-              <img
+              {/* <img
                 src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/150"}
                 alt={product.product_name}
                 className="product-image"
-              />
+              /> */}
               <div className="product-details">
-                <h3 className="product-name">{product.product_name || "Unnamed Product"}</h3>
+                <h3 className="product-name">{product.product || "Unnamed Product"}</h3>
                 <div className="product-info">
-                  <span className="product-description">{product.discription || "No description available"}</span>
-                  <span className="product-description">{product.category || "No category available"}</span>
+                  <span className="product-description">Quantity:{product.quantity || "No description available"}</span>
+                  <span className="product-description">฿ {product.price || "No category available"}</span>
 
-                  <span className="product-status">
+                  {/* <span className="product-status">
                     <span style={{ color: product.in_stock ? "green" : "red" }}>
                       {product.in_stock ? "In Stock" : "Out of Stock"}
                     </span>
-                  </span>
-                  <span className="product-quantity">Quantity: {product.quantity || 0}</span>
-                  <span className="product-price">Price: ${product.price || "N/A"}</span>
+                  </span> */}
+                  <span className="product-quantity">Discount: ฿{product.discount || 0}</span>
+                  <span className="product-price">Total Price: ฿{product.totalPrice }</span>
                 </div>
               </div>
 
