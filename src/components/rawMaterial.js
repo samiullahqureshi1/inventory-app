@@ -211,6 +211,9 @@ const RawMaterial = () => {
             <li>
               <Link to="/order-completed" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link>
             </li>
+            <li>
+              <Link to="/weekly-sales" style={{ color: 'white', textDecoration: 'none' }}>Sales</Link>
+            </li>
         </ul>
       </div>
     </div>

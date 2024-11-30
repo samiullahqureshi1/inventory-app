@@ -10,6 +10,8 @@ import Sales from './components/Sales';
 import OrderForm from './components/Addorder';
 import Proccessing from './components/Proccessing';
 import Pending from './components/Pending';
+import Order from './components/Order';
+import History from './components/History';
 function App() {
   return (
     <Router>
@@ -26,6 +28,8 @@ function App() {
           <Route path="/order-proccessing" element={<Proccessing />} />
           <Route path="/order-pending" element={<Pending />} />
           <Route path="/add-order" element={<OrderForm />} />
+          <Route path="/weekly-sales" element={<Order />} />
+          <Route path="/sales-history" element={<History />} />
         </Routes>
       </div>
     </Router>

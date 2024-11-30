@@ -185,6 +185,43 @@ const Sales = () => {
       setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
     }
   };
+
+  const handleCompleteOrder = async (orderId) => {
+    try {
+      const response = await fetch(
+        `https://inventory-app-b.vercel.app/product/orderdeliver/${orderId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: "Delivered" }),
+        }
+      );
+
+      if (response.ok) {
+        // Update UI after the status change
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === orderId
+              ? { ...product, status: "Completed" }
+              : product
+          )
+        );
+        setAlertType("success");
+        setAlertMessage("Order marked as delivered!");
+      } else {
+        const data = await response.json();
+        setAlertType("error");
+        setAlertMessage(data.message || "Failed to deliver order.");
+      }
+    } catch (error) {
+      setAlertType("error");
+      setAlertMessage("Error updating order. Please try again.");
+    } finally {
+      setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
+    }
+  };
   return (
     <div>
       {/* Navbar */}
@@ -238,6 +275,9 @@ const Sales = () => {
             <li>
               <Link to="/order-completed" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link>
             </li>
+            <li>
+              <Link to="/weekly-sales" style={{ color: 'white', textDecoration: 'none' }}>Sales</Link>
+            </li>
         </ul>
       </div>
     </div>
@@ -285,6 +325,12 @@ const Sales = () => {
                   <span className="product-quantity">Discount: ฿{product.discount || 0}</span>
                   <span className="product-price">Total Price: ฿{product.totalPrice }</span>
                   <span className="product-price">status: {product.status }</span>
+                  <button
+                    className="complete-button"
+                    onClick={() => handleCompleteOrder(product._id)}
+                  >
+                    Deliverd
+                  </button>{" "}
                 </div>
               </div>
 
