@@ -13,14 +13,7 @@ const Sales = () => {
   const [isEditing, setIsEditing] = useState(false); // Track if editing a product
   const [isOpen, setIsOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState(null); // Track the active product for options
-  const [formData, setFormData] = useState({
-    product_name: "", // Corrected field name
-    quantity: 0,      // Corrected field name
-    price: 0,
-    category:"",
-    discription: "",  // Corrected field name
-    images: []
-  });
+  
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -50,22 +43,7 @@ const Sales = () => {
     setImagePreviews([]); // Clear previews when closing or opening the modal
   };
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    const previews = [];
-
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        previews.push(reader.result);
-        if (previews.length === files.length) {
-          setImagePreviews((prev) => [...prev, ...previews]);
-          setFormData((prev) => ({ ...prev, images: files }));
-        }
-      };
-      reader.readAsDataURL(file);
-    });
-  };
+  
 
   // Toggle the options visibility for a specific product
   const handleOptionsToggle = (productId) => {
@@ -73,24 +51,7 @@ const Sales = () => {
   };
 
   // Handle edit and delete (you can define actual functionality for these)
-  const handleEdit = (productId) => {
-    const productToEdit = products.find((product) => product._id === productId);
-    if (!productToEdit) return;
-
-    setFormData({
-      product_name: productToEdit.product_name || "",
-      quantity: productToEdit.quantity || 0,
-      price: productToEdit.price || 0,
-      category:productToEdit.category || "",
-      discription: productToEdit.discription || "",
-      images: [] // No need to populate images, as they aren't directly editable
-    });
-
-    setImagePreviews(productToEdit.images || []);
-    setIsEditing(true); // Set editing mode
-    setActiveProduct(productId); // Close the options box
-    toggleModal();
-  };
+  
 
 
   const handleDelete = async (productId) => {
@@ -127,101 +88,9 @@ const Sales = () => {
   };
 
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
+ 
 
-    const newProductData = new FormData();
-    newProductData.append("product_name", formData.product_name); // Corrected field name
-    newProductData.append("quantity", formData.quantity); // Corrected field name
-    newProductData.append("price", formData.price);
-    newProductData.append("discription", formData.discription); // Corrected field name
-    newProductData.append("category", formData.category); // Corrected field name
-
-    // Append images to FormData
-    formData.images.forEach((image) => {
-      newProductData.append("images", image);
-    });
-
-    try {
-      const response = isEditing
-        ? await fetch(
-            `https://inventory-app-b.vercel.app/product/update_product/order/${activeProduct}`, // Use product ID in URL
-            {
-              method: "PATCH",
-              body: newProductData,
-            }
-          )
-        : await fetch("https://inventory-app-b.vercel.app/product/create_product", {
-            method: "POST",
-            body: newProductData,
-          });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setAlertType("success");
-        setAlertMessage(isEditing ? "Order updated successfully!" : "Order added successfully!");
-        if (isEditing) {
-          // Update product in UI
-          setProducts((prev) =>
-            prev.map((product) =>
-              product._id === activeProduct ? { ...product, ...data.product } : product
-            )
-          );
-        } else {
-          // Add new product to UI
-          setProducts((prev) => [...prev, data.product]);
-        }
-        toggleModal();
-      } else {
-        setAlertType("error");
-        setAlertMessage(data.message || "Failed to submit form.");
-      }
-    } catch (error) {
-      setAlertType("error");
-      setAlertMessage("Error submitting form. Please try again.");
-    } finally {
-      setFormLoading(false);
-      setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
-    }
-  };
-
-  const handleCompleteOrder = async (orderId) => {
-    try {
-      const response = await fetch(
-        `https://inventory-app-b.vercel.app/product/orderdeliver/${orderId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ status: "Delivered" }),
-        }
-      );
-
-      if (response.ok) {
-        // Update UI after the status change
-        setProducts((prevProducts) =>
-          prevProducts.map((product) =>
-            product._id === orderId
-              ? { ...product, status: "Completed" }
-              : product
-          )
-        );
-        setAlertType("success");
-        setAlertMessage("Order marked as delivered!");
-      } else {
-        const data = await response.json();
-        setAlertType("error");
-        setAlertMessage(data.message || "Failed to deliver order.");
-      }
-    } catch (error) {
-      setAlertType("error");
-      setAlertMessage("Error updating order. Please try again.");
-    } finally {
-      setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
-    }
-  };
+ 
   return (
     <div>
       {/* Navbar */}
@@ -286,7 +155,7 @@ const Sales = () => {
         <div className="product-infos">
           <p className="product-titles">Order</p>
           <span className="total-product">{products.length} total order</span>
-          <Link to='/order-completed'><button className="new-button">Completed</button></Link>
+          <Link to='/order-completed'><button className="new-button">Delivered</button></Link>
           <Link to='/order-proccessing'><button className="new-button">Proccessing</button></Link>
           <Link to='/order-pending'><button className="new-button">Pending</button></Link>
         </div>
@@ -325,12 +194,7 @@ const Sales = () => {
                   <span className="product-quantity">Discount: ฿{product.discount || 0}</span>
                   <span className="product-price">Total Price: ฿{product.totalPrice }</span>
                   <span className="product-price">status: {product.status }</span>
-                  <button
-                    className="complete-button"
-                    onClick={() => handleCompleteOrder(product._id)}
-                  >
-                    Deliverd
-                  </button>{" "}
+                 
                 </div>
               </div>
 
@@ -344,7 +208,7 @@ const Sales = () => {
                 </span>
                 {activeProduct === product._id && (
                   <div className="options-box">
-                    <button onClick={() => handleEdit(product._id)}>Edit</button>
+                   
                     <button onClick={() => handleDelete(product._id)}>Delete</button>
                   </div>
                 )}
@@ -354,149 +218,7 @@ const Sales = () => {
         )}
       </div>
 
-      {/* Modal for Adding Product */}
-      {showModal && (
-        <div className="custom-modal-overlay">
-          <div className="custom-modal-container">
-            <button className="custom-modal-close" onClick={toggleModal}>
-              ✖
-            </button>
-            <div className="custom-modal-content">
-              <div className="custom-modal-left">
-                {/* <h2>Product Preview</h2> */}
-                {/* <div className="custom-product-image-container">
-                  <img
-                    src={imagePreviews[0] || "https://via.placeholder.com/150"}
-                    alt="Product Preview"
-                    className="custom-product-image"
-                  />
-                </div> */}
-              </div>
-
-              <div className="custom-modal-right">
-              <h2>{isEditing ? "Edit Product" : "Add Product"}</h2>
-                <form onSubmit={handleFormSubmit}>
-                  <div className="custom-form-group">
-                    <label>Product Name</label>
-                    <input
-                      type="text"
-                      placeholder="Enter product name"
-                      value={formData.product_name} // Corrected field name
-                      onChange={(e) => setFormData({ ...formData, product_name: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        border: '1px solid #242b37',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        marginBottom: '10px',
-                      }}
-                    />
-                  </div>
-                  {/* <div className="custom-form-group">
-                    <label>Product Category</label>
-                    <input
-                      type="text"
-                      placeholder="Enter category"
-                      value={formData.category} // Corrected field name
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        border: '1px solid #242b37',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        marginBottom: '10px',
-                      }}
-                    />
-                  </div> */}
-                  <div className="custom-form-group">
-                    <label>Quantity</label>
-                    <input
-                      type="number"
-                      value={formData.quantity}
-                      onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        border: '1px solid #242b37',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        marginBottom: '10px',
-                      }}
-                    />
-                  </div>
-                  <div className="custom-form-group">
-                    <label>Price</label>
-                    <input
-                      type="number"
-                      value={formData.price}
-                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        border: '1px solid #242b37',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        marginBottom: '10px',
-                      }}
-                    />
-                  </div>
-                  <div className="custom-form-group">
-                    <label>Discount</label>
-                    <input
-                      type="number"
-                      value={formData.price}
-                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        border: '1px solid #242b37',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        marginBottom: '10px',
-                      }}
-                    />
-                  </div>
-                  {/* <div className="custom-form-group">
-                    <label>Description</label>
-                    <textarea
-                      value={formData.discription}
-                      onChange={(e) => setFormData({ ...formData, discription: e.target.value })}
-                       rows="4"
-                      className="custom-textarea"
-                    />
-                  </div> */}
-                  {/* <div className="custom-form-group">
-                    <label>Images</label>
-                    <input
-                      type="file"
-                      multiple
-                      onChange={handleImageChange}
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        border: '1px solid #242b37',
-                        borderRadius: '4px',
-                        fontSize: '14px',
-                        marginBottom: '10px',
-                      }}
-                    />
-                  </div> */}
-                  <div className="form-actions">
-                  <button className="btn-submit" type="submit" enable={formLoading}>
-                  {formLoading ? "Submitting..." : isEditing ? "Update Order" : "Add Order  "}
-              </button>
-                    <button className="btn-cancel" type="button" onClick={toggleModal}>
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 };

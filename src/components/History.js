@@ -3,189 +3,101 @@ import "./Inventory.css";
 import { Link } from "react-router-dom";
 
 const History = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]); // Orders
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [imagePreviews, setImagePreviews] = useState([]);
-  const [formLoading, setFormLoading] = useState(false); // Loader for form submission
+  const [totalSales, setTotalSales] = useState(0); // Total sales value
   const [alertMessage, setAlertMessage] = useState(null);
   const [alertType, setAlertType] = useState(""); // 'success' or 'error'
-  const [isEditing, setIsEditing] = useState(false); // Track if editing a product
   const [isOpen, setIsOpen] = useState(false);
-  const [activeProduct, setActiveProduct] = useState(null); // Track the active product for options
-  const [formData, setFormData] = useState({
-    product_name: "", // Corrected field name
-    quantity: 0,      // Corrected field name
-    price: 0,
-    category:"",
-    discription: "",  // Corrected field name
-    images: []
-  });
+  const [activeProduct, setActiveProduct] = useState(null); // Track active product for options
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  // Fetch weekly sales data
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchWeeklySales = async () => {
       try {
-        const response = await fetch('https://inventory-app-b.vercel.app/product/getAllSales');
-        const text = await response.text();
-        console.log(text);
+        const response = await fetch("https://inventory-app-b.vercel.app/product/getAllSales");
+        if (!response.ok) {
+          throw new Error("Failed to fetch sales history.");
+        }
 
-        const data = JSON.parse(text);
-        console.log(data);
-
-        setProducts(data.data);
+        const data = await response.json();
+        setProducts(data.orders || []);
+        setTotalSales(data.totalSales || 0); // Update total sales
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching sales history:", error);
         setLoading(false);
       }
     };
 
-    fetchProducts();
+    fetchWeeklySales();
   }, []);
 
-  const toggleModal = () => {
-    setShowModal((prev) => !prev);
-    setImagePreviews([]); // Clear previews when closing or opening the modal
-  };
-
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    const previews = [];
-
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        previews.push(reader.result);
-        if (previews.length === files.length) {
-          setImagePreviews((prev) => [...prev, ...previews]);
-          setFormData((prev) => ({ ...prev, images: files }));
-        }
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
-  // Toggle the options visibility for a specific product
-  const handleOptionsToggle = (productId) => {
-    setActiveProduct(activeProduct === productId ? null : productId); // Toggle visibility
-  };
-
-  // Handle edit and delete (you can define actual functionality for these)
-  const handleEdit = (productId) => {
-    const productToEdit = products.find((product) => product._id === productId);
-    if (!productToEdit) return;
-
-    setFormData({
-      product_name: productToEdit.product_name || "",
-      quantity: productToEdit.quantity || 0,
-      price: productToEdit.price || 0,
-      category:productToEdit.category || "",
-      discription: productToEdit.discription || "",
-      images: [] // No need to populate images, as they aren't directly editable
-    });
-
-    setImagePreviews(productToEdit.images || []);
-    setIsEditing(true); // Set editing mode
-    setActiveProduct(productId); // Close the options box
-    toggleModal();
-  };
-
-
-  const handleDelete = async (productId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this order?"
-    );
-    if (!confirmDelete) return;
-
-    try {
-      const response = await fetch(
-        `https://inventory-app-b.vercel.app/product/order/${productId}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (response.ok) {
-        setProducts((prev) =>
-          prev.filter((product) => product._id !== productId)
-        ); // Update UI
-        setAlertType("success");
-        setAlertMessage("order successfully deleted.");
-      } else {
-        const data = await response.json();
-        setAlertType("error");
-        setAlertMessage(data.message || "Failed to delete order.");
-      }
-    } catch (error) {
-      setAlertType("error");
-      setAlertMessage("Error deleting order. Please try again.");
-    } finally {
-      setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
-    }
-  };
-
-
-  
   return (
     <div>
       {/* Navbar */}
-      {alertMessage && (
-  <div className={`alert ${alertType}`}>
-    {alertMessage}
-  </div>
-)}
+      {alertMessage && <div className={`alert ${alertType}`}>{alertMessage}</div>}
 
-      
-<div className="navbar-containers">
-      <h2 className="navbar-headings">Inventory</h2>
-      <div className="hamburger" onClick={toggleMenu}>
-        {/* Hamburger icon */}
-        <span className={`bar ${isOpen ? 'open' : ''}`}></span>
-        <span className={`bar ${isOpen ? 'open' : ''}`}></span>
-        <span className={`bar ${isOpen ? 'open' : ''}`}></span>
+      <div className="navbar-containers">
+        <h2 className="navbar-headings">Inventory</h2>
+        <div className="hamburger" onClick={toggleMenu}>
+          <span className={`bar ${isOpen ? "open" : ""}`}></span>
+          <span className={`bar ${isOpen ? "open" : ""}`}></span>
+          <span className={`bar ${isOpen ? "open" : ""}`}></span>
+        </div>
+        <div className={`navbar-link ${isOpen ? "open" : ""}`}>
+          <ul>
+            <li>
+              <Link to="/dashboard" style={{ color: "white", textDecoration: "none" }}>
+                Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link to="/inventory" style={{ color: "white", textDecoration: "none" }}>
+                Inventory
+              </Link>
+            </li>
+            <li>
+              <Link to="/raw-material" style={{ color: "white", textDecoration: "none" }}>
+                Raw Material
+              </Link>
+            </li>
+            <li>
+              <Link to="/out-of-stock" style={{ color: "white", textDecoration: "none" }}>
+                Out of Stock
+              </Link>
+            </li>
+            <li>
+              <Link to="/order-completed" style={{ color: "white", textDecoration: "none" }}>
+                Orders
+              </Link>
+            </li>
+            <li>
+              <Link to="/weekly-sales" style={{ color: "white", textDecoration: "none" }}>
+                Sales
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div className={`navbar-link ${isOpen ? 'open' : ''}`}>
-        <ul>
-        <li>
-              <Link to="/dashboard" style={{ color: 'white', textDecoration: 'none' }}>Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/inventory" style={{ color: 'white', textDecoration: 'none' }}>Inventory</Link>
-            </li>
-            <li>
-              <Link to="/raw-material" style={{ color: 'white', textDecoration: 'none' }}>Raw Material</Link>
-            </li>
-            <li>
-              <Link to="/out-of-stock" style={{ color: 'white', textDecoration: 'none' }}>Out of Stock</Link>
-            </li>
-            <li>
-              <Link to="/order-completed" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link>
-            </li>
-            <li>
-              <Link to="/weekly-sales" style={{ color: 'white', textDecoration: 'none' }}>Sales</Link>
-            </li>
-        </ul>
-      </div>
-    </div>
+
       {/* Dashboard Section */}
       <div className="dashboard-sections">
         <div className="product-infos">
           <p className="product-titles">Sales</p>
-          <span className="total-product">{products.length} total sales</span>
-          <Link to='/weekly-sales'><button className="new-button">Weekly</button></Link>
-          <Link to='/monthly-sales'><button className="new-button">Monthly</button></Link>
-          <Link to='/sales-history'><button className="new-button">History</button></Link>
-        </div>
-        <div className="action">
-          <div className="search-bars">
-            <input type="text" placeholder="Search product..." />
-            <button className="search-icons">🔍</button>
-          </div>
-        {/* <Link to={'/add-order'}> <button className="add-products" onClick={toggleModal}>
-            Add Order
-          </button></Link>  */}
+          <span className="total-product">Total Sales: ฿{totalSales.toFixed(2)}</span>
+          <Link to="/weekly-sales">
+            <button className="new-button">Weekly</button>
+          </Link>
+          <Link to="/monthly-sales">
+            <button className="new-button">Monthly</button>
+          </Link>
+          <Link to="/sales-history">
+            <button className="new-button">History</button>
+          </Link>
         </div>
       </div>
 
@@ -194,51 +106,24 @@ const History = () => {
         {loading ? (
           <p>Loading sales...</p>
         ) : products.length === 0 ? (
-          <p>No weekly sales found.</p>
+          <p>No sales history found.</p>
         ) : (
           products.map((product) => (
             <div className="product-card" key={product._id}>
-              
               <div className="product-details">
                 <h3 className="product-name">{product.product || "Unnamed Product"}</h3>
                 <div className="product-info">
-                  <span className="product-description">Quantity:{product.quantity || "No description available"}</span>
-                  <span className="product-description">฿ {product.price || "No category available"}</span>
-
-                  
-                  <span className="product-quantity">Discount: ฿{product.discount || 0}</span>
-                  <span className="product-price">Total Price: ฿{product.totalPrice }</span>
-                  {/* <span className="product-price">status: {product.status }</span> */}
+                  <span className="product-quantity">Quantity: {product.quantity || 0}</span>
+                  <span className="product-price">Total Price: ฿{product.totalPrice || 0}</span>
+                  <span className="product-price">Status: {product.status || "Unknown"}</span>
                 </div>
-              </div>
-
-              {/* Three Dots Options */}
-              <div className="options-container">
-                <span
-                  className="three-dots"
-                  onClick={() => handleOptionsToggle(product._id)}
-                >
-                  ⋮
-                </span>
-                {activeProduct === product._id && (
-                  <div className="options-box">
-                   
-                    <button onClick={() => handleDelete(product._id)}>Delete</button>
-                  </div>
-                )}
               </div>
             </div>
           ))
         )}
       </div>
-
-        
-      
     </div>
   );
 };
 
 export default History;
-
-
-

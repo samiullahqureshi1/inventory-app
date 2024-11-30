@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Inventory.css";
 import { Link } from "react-router-dom";
 
-const Order = () => {
+const Monthly = () => {
   const [products, setProducts] = useState([]); // Orders
   const [loading, setLoading] = useState(true);
   const [totalSales, setTotalSales] = useState(0); // Total sales value
@@ -18,9 +18,9 @@ const Order = () => {
   useEffect(() => {
     const fetchWeeklySales = async () => {
       try {
-        const response = await fetch("https://inventory-app-b.vercel.app/product/weeklysales");
+        const response = await fetch("https://inventory-app-b.vercel.app/product/getMonthlySales");
         if (!response.ok) {
-          throw new Error("Failed to fetch weekly sales.");
+          throw new Error("Failed to fetch monthly sales.");
         }
 
         const data = await response.json();
@@ -28,7 +28,7 @@ const Order = () => {
         setTotalSales(data.totalSales || 0); // Update total sales
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching weekly sales:", error);
+        console.error("Error fetching monthly sales:", error);
         setLoading(false);
       }
     };
@@ -106,7 +106,7 @@ const Order = () => {
         {loading ? (
           <p>Loading sales...</p>
         ) : products.length === 0 ? (
-          <p>No weekly sales found.</p>
+          <p>No sales history found.</p>
         ) : (
           products.map((product) => (
             <div className="product-card" key={product._id}>
@@ -126,4 +126,4 @@ const Order = () => {
   );
 };
 
-export default Order;
+export default Monthly;

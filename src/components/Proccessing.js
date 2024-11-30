@@ -125,16 +125,16 @@ const Proccessing = () => {
         setProducts((prevProducts) =>
           prevProducts.map((product) =>
             product._id === orderId
-              ? { ...product, status: "Completed" }
+              ? { ...product, status: "Delivered" }
               : product
           )
         );
         setAlertType("success");
-        setAlertMessage("Order marked as completed!");
+        setAlertMessage("Order marked as Delivered!");
       } else {
         const data = await response.json();
         setAlertType("error");
-        setAlertMessage(data.message || "Failed to complete order.");
+        setAlertMessage(data.message || "Failed to Delivered order.");
       }
     } catch (error) {
       setAlertType("error");
@@ -144,73 +144,7 @@ const Proccessing = () => {
     }
   };
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-
-    const newProductData = new FormData();
-    newProductData.append("product_name", formData.product_name); // Corrected field name
-    newProductData.append("quantity", formData.quantity); // Corrected field name
-    newProductData.append("price", formData.price);
-    newProductData.append("discription", formData.discription); // Corrected field name
-    newProductData.append("category", formData.category); // Corrected field name
-
-    // Append images to FormData
-    formData.images.forEach((image) => {
-      newProductData.append("images", image);
-    });
-
-    try {
-      const response = isEditing
-        ? await fetch(
-            `https://inventory-app-b.vercel.app/product/update_product/order/${activeProduct}`, // Use product ID in URL
-            {
-              method: "PATCH",
-              body: newProductData,
-            }
-          )
-        : await fetch(
-            "https://inventory-app-b.vercel.app/product/create_product",
-            {
-              method: "POST",
-              body: newProductData,
-            }
-          );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setAlertType("success");
-        setAlertMessage(
-          isEditing
-            ? "Product updated successfully!"
-            : "Product added successfully!"
-        );
-        if (isEditing) {
-          // Update product in UI
-          setProducts((prev) =>
-            prev.map((product) =>
-              product._id === activeProduct
-                ? { ...product, ...data.product }
-                : product
-            )
-          );
-        } else {
-          // Add new product to UI
-          setProducts((prev) => [...prev, data.product]);
-        }
-        toggleModal();
-      } else {
-        setAlertType("error");
-        setAlertMessage(data.message || "Failed to submit form.");
-      }
-    } catch (error) {
-      setAlertType("error");
-      setAlertMessage("Error submitting form. Please try again.");
-    } finally {
-      setFormLoading(false);
-      setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
-    }
-  };
+  
   return (
     <div>
       {/* Navbar */}
@@ -276,7 +210,7 @@ const Proccessing = () => {
           <p className="product-titles">Order</p>
           <span className="total-product">{products.length} total order</span>
           <Link to="/order-completed">
-            <button className="new-button">Completed</button>
+            <button className="new-button">Delivered</button>
           </Link>
           <Link to="/order-proccessing">
             <button className="new-button">Proccessing</button>
@@ -332,7 +266,7 @@ const Proccessing = () => {
                     className="complete-button"
                     onClick={() => handleCompleteOrder(product._id)}
                   >
-                    Complete
+                    Delivered
                   </button>{" "}
                 </div>
               </div>
@@ -362,3 +296,4 @@ const Proccessing = () => {
 };
 
 export default Proccessing;
+

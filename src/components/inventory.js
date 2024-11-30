@@ -177,6 +177,8 @@ const Inventory = () => {
       setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
     }
   };
+
+ 
   return (
     <div>
       {/* Navbar */}
