@@ -20,7 +20,7 @@
   }
   
   label {
-    display: block;
+    display: flex;
     font-weight: bold;
     margin-bottom: 5px;
   }
@@ -87,4 +87,56 @@
     font-size: 14px;
     margin-bottom: 10px;
   }
+  @media (max-width: 768px) {
+    .order-form-container {
+      width: 80%; /* Take up more width on smaller screens */
+      padding: 15px;
+    }
   
+    h2 {
+      font-size: 18px;
+    }
+  
+    .form-group {
+      margin-bottom: 12px; /* Reduce space between form elements */
+    }
+  
+    label {
+      font-size: 14px;
+    }
+  
+    .publish-btn {
+      padding: 12px 20px; /* Adjust button size for mobile */
+      font-size: 14px;
+    }
+  
+    /* Adjust input sizes for mobile */
+    input,
+    select {
+      padding: 10px;
+      font-size: 14px;
+    }
+  }
+  
+  /* For screens 480px and below (small mobile screens) */
+  @media (max-width: 480px) {
+    .order-form-container {
+      width: 90%; /* Make it almost full width on very small screens */
+      padding: 10px;
+    }
+  
+    h2 {
+      font-size: 16px;
+    }
+  
+    .form-group {
+      margin-bottom: 10px;
+    }
+  
+    .publish-btn {
+      padding: 10px 15px; /* Smaller padding on extra small screens */
+      font-size: 12px;
+    }
+  
+   
+  }

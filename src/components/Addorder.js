@@ -8,7 +8,7 @@ const OrderForm = () => {
     quantity: 0,
     price: 0,
     discount: 0,
-    status: "", // Default empty status
+    status: "Pending", // Default order status
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -32,15 +32,13 @@ const OrderForm = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { product, quantity, price, discount, status } = formData;
-
     try {
       const response = await fetch("https://inventory-app-b.vercel.app/product/createorder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ product, quantity, price, discount, status }),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
@@ -52,8 +50,8 @@ const OrderForm = () => {
       }
 
       const result = await response.json();
-      alert("Order successfully placed");
-      navigate("/order");
+      alert("Order successfully placed!");
+      navigate("/order-completed");
     } catch (error) {
       setError("An error occurred while placing the order.");
       setTimeout(() => setError(""), 3000);
@@ -67,7 +65,7 @@ const OrderForm = () => {
       <h2>Place Your Order</h2>
       {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
+        <div className="custom-form-group">
           <label className="form-label">Product Name</label>
           <input
             type="text"
@@ -84,7 +82,6 @@ const OrderForm = () => {
               marginBottom: "10px",
             }}
             className="form-input"
-            required
           />
         </div>
         <div className="form-group">
@@ -113,7 +110,6 @@ const OrderForm = () => {
             name="price"
             value={formData.price}
             onChange={handleInputChange}
-            className="form-input"
             style={{
               width: "100%",
               padding: "8px",
@@ -122,6 +118,7 @@ const OrderForm = () => {
               fontSize: "14px",
               marginBottom: "10px",
             }}
+            className="form-input"
             required
           />
         </div>
@@ -144,31 +141,27 @@ const OrderForm = () => {
           />
         </div>
         <div className="form-group">
-          <label className="form-label">Status</label>
+          <label className="form-label">Order Status</label>
           <select
             name="status"
             value={formData.status}
             onChange={handleInputChange}
-            className="form-input"
             style={{
               width: "100%",
               padding: "8px",
-              // border: "1px solid #242b37",
+              border: "1px solid gray",
               borderRadius: "4px",
               fontSize: "14px",
               marginBottom: "10px",
-              backgroundColor: "#242b37", // Corrected to camelCase
+              backgroundColor:'#242b37',
               color:'white'
-                          }}
-            required
+            }}
+            className="form-input"
           >
-            <option value="" disabled>
-              Select status
-            </option>
             <option value="Pending">Pending</option>
-            <option value="Confirmed">Confirmed</option>
-            <option value="Shipped">Shipped</option>
-            <option value="Delivered">Delivered</option>
+            <option value="Processing">Processing</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
           </select>
         </div>
         <div className="form-group">

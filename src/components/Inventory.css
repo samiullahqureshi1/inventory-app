@@ -83,7 +83,10 @@
     }
   
     .navbar-link.open {
-      display: flex;
+      display: ruby;
+        position: absolute;
+        z-index: 999;
+        height: 100%;
     }
   
     .navbar-link ul {
@@ -567,3 +570,40 @@ select {
 }
 
   
+
+.new-button {
+  width: 100px;
+  height: 30px;
+  margin-left: 10px;
+  border-radius: 10px;
+  background-color: #16c784;
+  cursor: pointer;
+  color: white;
+}
+
+.complete-button {
+  background-color: #16c784;
+  color: white;
+  border-radius: 5px;
+  display: flex;
+  justify-content: flex-end; /* Align content to the right */
+ cursor: pointer;
+ 
+}
+
+@media (max-width: 768px) {
+  .new-button,
+  .complete-button {
+    width: 92%; /* Buttons take up more width on smaller screens */
+    /* font-size: 0.9rem; Slightly smaller text */
+    height: 40px; /* Adjust button height */
+  }
+  
+  .complete-button {
+    margin-left: 10px; /* Adjust margin for better alignment */
+    display: flex;
+    justify-content: center;
+    width: 90px;
+    height: 30px;
+  }
+}

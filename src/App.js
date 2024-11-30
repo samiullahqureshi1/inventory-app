@@ -8,6 +8,8 @@ import RawMaterial from './components/rawMaterial';
 import OutStock from './components/OutOfStock';
 import Sales from './components/Sales';
 import OrderForm from './components/Addorder';
+import Proccessing from './components/Proccessing';
+import Pending from './components/Pending';
 function App() {
   return (
     <Router>
@@ -20,10 +22,10 @@ function App() {
           <Route path="/raw-material" element={<RawMaterial />} />
           <Route path="/out-of-stock" element={<OutStock />} />
           <Route path="/out-of-stock" element={<OutStock />} />
-          <Route path="/order" element={<Sales />} />
+          <Route path="/order-completed" element={<Sales />} />
+          <Route path="/order-proccessing" element={<Proccessing />} />
+          <Route path="/order-pending" element={<Pending />} />
           <Route path="/add-order" element={<OrderForm />} />
-
-
         </Routes>
       </div>
     </Router>

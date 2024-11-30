@@ -11,7 +11,7 @@ const OutStock = () => {
   const [alertMessage, setAlertMessage] = useState(null);
   const [alertType, setAlertType] = useState(""); // 'success' or 'error'
   const [isEditing, setIsEditing] = useState(false); // Track if editing a product
-
+  const [isOpen, setIsOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState(null); // Track the active product for options
   const [formData, setFormData] = useState({
     product_name: "", // Corrected field name
@@ -175,6 +175,9 @@ const OutStock = () => {
       setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
     }
   };
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
   return (
     <div>
       {/* Navbar */}
@@ -184,11 +187,17 @@ const OutStock = () => {
   </div>
 )}
 
-      <div className="navbar-containers">
-        <h2 className="navbar-headings">Inventory</h2>
-        <div className="navbar-link">
-          <ul>
-            <li>
+<div className="navbar-containers">
+      <h2 className="navbar-headings">Inventory</h2>
+      <div className="hamburger" onClick={toggleMenu}>
+        {/* Hamburger icon */}
+        <span className={`bar ${isOpen ? 'open' : ''}`}></span>
+        <span className={`bar ${isOpen ? 'open' : ''}`}></span>
+        <span className={`bar ${isOpen ? 'open' : ''}`}></span>
+      </div>
+      <div className={`navbar-link ${isOpen ? 'open' : ''}`}>
+        <ul>
+        <li>
               <Link to="/dashboard" style={{ color: 'white', textDecoration: 'none' }}>Dashboard</Link>
             </li>
             <li>
@@ -201,11 +210,11 @@ const OutStock = () => {
               <Link to="/out-of-stock" style={{ color: 'white', textDecoration: 'none' }}>Out of Stock</Link>
             </li>
             <li>
-              <Link to="/order" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link>
+              <Link to="/order-completed" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link>
             </li>
-          </ul>
-        </div>
+        </ul>
       </div>
+    </div>
 
       {/* Dashboard Section */}
       <div className="dashboard-sections">

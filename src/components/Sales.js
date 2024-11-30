@@ -94,30 +94,38 @@ const Sales = () => {
 
 
   const handleDelete = async (productId) => {
-  const confirmDelete = window.confirm("Are you sure you want to delete this product?");
-  if (!confirmDelete) return;
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this order?"
+    );
+    if (!confirmDelete) return;
 
-  try {
-    const response = await fetch(`https://inventory-app-b.vercel.app/product/${productId}`, {
-      method: "DELETE",
-    });
+    try {
+      const response = await fetch(
+        `https://inventory-app-b.vercel.app/product/order/${productId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
-    if (response.ok) {
-      setProducts((prev) => prev.filter((product) => product._id !== productId)); // Update UI
-      setAlertType("success");
-      setAlertMessage("Product successfully deleted.");
-    } else {
-      const data = await response.json();
+      if (response.ok) {
+        setProducts((prev) =>
+          prev.filter((product) => product._id !== productId)
+        ); // Update UI
+        setAlertType("success");
+        setAlertMessage("order successfully deleted.");
+      } else {
+        const data = await response.json();
+        setAlertType("error");
+        setAlertMessage(data.message || "Failed to delete order.");
+      }
+    } catch (error) {
       setAlertType("error");
-      setAlertMessage(data.message || "Failed to delete product.");
+      setAlertMessage("Error deleting order. Please try again.");
+    } finally {
+      setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
     }
-  } catch (error) {
-    setAlertType("error");
-    setAlertMessage("Error deleting product. Please try again.");
-  } finally {
-    setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
-  }
-};
+  };
+
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -137,7 +145,7 @@ const Sales = () => {
     try {
       const response = isEditing
         ? await fetch(
-            `https://inventory-app-b.vercel.app/product/update_product/${activeProduct}`, // Use product ID in URL
+            `https://inventory-app-b.vercel.app/product/update_product/order/${activeProduct}`, // Use product ID in URL
             {
               method: "PATCH",
               body: newProductData,
@@ -152,7 +160,7 @@ const Sales = () => {
 
       if (response.ok) {
         setAlertType("success");
-        setAlertMessage(isEditing ? "Product updated successfully!" : "Product added successfully!");
+        setAlertMessage(isEditing ? "Order updated successfully!" : "Order added successfully!");
         if (isEditing) {
           // Update product in UI
           setProducts((prev) =>
@@ -228,7 +236,7 @@ const Sales = () => {
               <Link to="/out-of-stock" style={{ color: 'white', textDecoration: 'none' }}>Out of Stock</Link>
             </li>
             <li>
-              <Link to="/order" style={{ color: 'white', textDecoration: 'none' }}>Order</Link>
+              <Link to="/order-completed" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link>
             </li>
         </ul>
       </div>
@@ -238,6 +246,9 @@ const Sales = () => {
         <div className="product-infos">
           <p className="product-titles">Order</p>
           <span className="total-product">{products.length} total order</span>
+          <Link to='/order-completed'><button className="new-button">Completed</button></Link>
+          <Link to='/order-proccessing'><button className="new-button">Proccessing</button></Link>
+          <Link to='/order-pending'><button className="new-button">Pending</button></Link>
         </div>
         <div className="action">
           <div className="search-bars">
@@ -255,7 +266,7 @@ const Sales = () => {
         {loading ? (
           <p>Loading orders...</p>
         ) : products.length === 0 ? (
-          <p>No order found.</p>
+          <p>No completed order found.</p>
         ) : (
           products.map((product) => (
             <div className="product-card" key={product._id}>
@@ -270,13 +281,10 @@ const Sales = () => {
                   <span className="product-description">Quantity:{product.quantity || "No description available"}</span>
                   <span className="product-description">฿ {product.price || "No category available"}</span>
 
-                  {/* <span className="product-status">
-                    <span style={{ color: product.in_stock ? "green" : "red" }}>
-                      {product.in_stock ? "In Stock" : "Out of Stock"}
-                    </span>
-                  </span> */}
+                  
                   <span className="product-quantity">Discount: ฿{product.discount || 0}</span>
                   <span className="product-price">Total Price: ฿{product.totalPrice }</span>
+                  <span className="product-price">status: {product.status }</span>
                 </div>
               </div>
 

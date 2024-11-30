@@ -209,7 +209,7 @@ const RawMaterial = () => {
               <Link to="/out-of-stock" style={{ color: 'white', textDecoration: 'none' }}>Out of Stock</Link>
             </li>
             <li>
-              <Link to="/order" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link>
+              <Link to="/order-completed" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link>
             </li>
         </ul>
       </div>
