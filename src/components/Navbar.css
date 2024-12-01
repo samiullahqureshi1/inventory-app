@@ -391,4 +391,42 @@
     margin-bottom: 10px; /* Ensures proper bottom spacing */
   }
   
+  @media (max-width: 768px) {
+    .content-section {
+      flex-direction: column;
+      padding: 15px;
+    }
+  
+    .stock-level-section,
+    .best-selling-section {
+      width: 90%;
+      margin-bottom: 20px;
+    }
+  p{
+    font-size: 10px;
+  }
+    .dashboard-boxes {
+      flex-direction: column;
+      gap: 15px;
+    }
+  
+    .box {
+      width: 90%;
+      height: auto;
+      padding: 15px;
+    }
+  
+    .box-header {
+      gap: 20px;
+    }
+  
+    .box-title {
+      font-size: 12px;
+    }
+  
+    .box-value {
+      font-size: 18px;
+    }
+  }
+
   

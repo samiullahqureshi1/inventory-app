@@ -50,24 +50,46 @@ const Inventory = () => {
     setImagePreviews([]); // Clear previews when closing or opening the modal
   };
 
+  // const handleImageChange = (e) => {
+  //   const files = Array.from(e.target.files);
+  //   const previews = [];
+
+  //   files.forEach((file) => {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       previews.push(reader.result);
+  //       if (previews.length === files.length) {
+  //         setImagePreviews((prev) => [...prev, ...previews]);
+  //         setFormData((prev) => ({ ...prev, images: files }));
+  //       }
+  //     };
+  //     reader.readAsDataURL(file);
+  //   });
+  // };
+
+  // Toggle the options visibility for a specific product
+  
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     const previews = [];
-
+  
     files.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         previews.push(reader.result);
         if (previews.length === files.length) {
           setImagePreviews((prev) => [...prev, ...previews]);
-          setFormData((prev) => ({ ...prev, images: files }));
+          setFormData((prev) => ({
+            ...prev,
+            images: [...prev.images, ...files], // Update the images array
+          }));
         }
       };
       reader.readAsDataURL(file);
     });
   };
-
-  // Toggle the options visibility for a specific product
+  
+  
   const handleOptionsToggle = (productId) => {
     setActiveProduct(activeProduct === productId ? null : productId); // Toggle visibility
   };
@@ -121,7 +143,7 @@ const Inventory = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
+    setFormLoading(true); 
     const newProductData = new FormData();
     newProductData.append("product_name", formData.product_name); // Corrected field name
     newProductData.append("quantity", formData.quantity); // Corrected field name
@@ -171,7 +193,7 @@ const Inventory = () => {
       }
     } catch (error) {
       setAlertType("error");
-      setAlertMessage("Error submitting form. Please try again.");
+      setAlertMessage(error.message ||"Error submitting form. Please try again.");
     } finally {
       setFormLoading(false);
       setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
@@ -181,12 +203,12 @@ const Inventory = () => {
  
   return (
     <div>
-      {/* Navbar */}
+      {/* Navbar
       {alertMessage && (
   <div className={`alert ${alertType}`}>
     {alertMessage}
   </div>
-)}
+)} */}
 
       
 <div className="navbar-containers">
@@ -291,6 +313,11 @@ const Inventory = () => {
       {showModal && (
         <div className="custom-modal-overlay">
           <div className="custom-modal-container">
+          {alertMessage && (
+  <div className={`alert ${alertType}`}>
+    {alertMessage}
+  </div>
+)}
             <button className="custom-modal-close" onClick={toggleModal}>
               ✖
             </button>

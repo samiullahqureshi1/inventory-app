@@ -13,6 +13,8 @@ const Pending = () => {
   const [isEditing, setIsEditing] = useState(false); // Track if editing a product
   const [isOpen, setIsOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState(null); // Track the active product for options
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [formData, setFormData] = useState({
     product_name: "", // Corrected field name
     quantity: 0, // Corrected field name
@@ -116,7 +118,7 @@ const Pending = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ status: "Completed" }),
+          body: JSON.stringify({ status: "Delivered" }),
         }
       );
 
@@ -144,7 +146,16 @@ const Pending = () => {
     }
   };
 
-  
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    // Filter products based on the search query
+    const filtered = products.filter((product) =>
+      product.product?.toLowerCase().includes(query)
+    );
+    setFilteredProducts(filtered);
+  };
   return (
     <div>
       {/* Navbar */}
@@ -220,8 +231,13 @@ const Pending = () => {
           </Link>
         </div>
         <div className="action">
-          <div className="search-bars">
-            <input type="text" placeholder="Search product..." />
+        <div className="search-bars">
+            <input
+              type="text"
+              placeholder="Search product..."
+              value={searchQuery}
+              onChange={handleSearch}
+            />
             <button className="search-icons">🔍</button>
           </div>
           <Link to={"/add-order"}>

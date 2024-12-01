@@ -7,7 +7,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 const Navbar = () => {
   const [loading, setLoading] = useState(true);
-
+  const [isOpen, setIsOpen] = useState(false);
 
   // State to manage displayed products
   const [products, setProducts] = useState([]);
@@ -34,26 +34,32 @@ const Navbar = () => {
     fetchProducts();
   }, []);
   
-
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
   return (
     <div>
       {/* Navbar */}
-      <div className="navbar-container">
-        <h2 className="navbar-heading">Inventar</h2>
-        <div className="navbar-links">
-          <ul>
-            <li>
-              <Link to="/dashboard" style={{ color: 'white', textDecoration: 'none' }}>Dashboard</Link> {/* Link to Dashboard */}
+      <div className="navbar-containers">
+      <h2 className="navbar-headings">Inventory</h2>
+      <div className="hamburger" onClick={toggleMenu}>
+        {/* Hamburger icon */}
+        <span className={`bar ${isOpen ? 'open' : ''}`}></span>
+        <span className={`bar ${isOpen ? 'open' : ''}`}></span>
+        <span className={`bar ${isOpen ? 'open' : ''}`}></span>
+      </div>
+      <div className={`navbar-link ${isOpen ? 'open' : ''}`}>
+        <ul>
+        <li>
+              <Link to="/dashboard" style={{ color: 'white', textDecoration: 'none' }}>Dashboard</Link>
             </li>
             <li>
-              <Link to="/inventory" style={{ color: 'white', textDecoration: 'none' }}>Inventory</Link> {/* Link to Inventory */}
+              <Link to="/inventory" style={{ color: 'white', textDecoration: 'none' }}>Inventory</Link>
             </li>
             <li>
-  <Link to="/raw-material" style={{ color: 'white', textDecoration: 'none' }}>
-    Raw Material
-  </Link>
-</li>
-<li>
+              <Link to="/raw-material" style={{ color: 'white', textDecoration: 'none' }}>Raw Material</Link>
+            </li>
+            <li>
               <Link to="/out-of-stock" style={{ color: 'white', textDecoration: 'none' }}>Out of Stock</Link>
             </li>
             <li>
@@ -62,9 +68,9 @@ const Navbar = () => {
             <li>
               <Link to="/weekly-sales" style={{ color: 'white', textDecoration: 'none' }}>Sales</Link>
             </li>
-          </ul>
-        </div>
+        </ul>
       </div>
+    </div>
 
       {/* Dashboard Section */}
       <div className="dashboard-section">

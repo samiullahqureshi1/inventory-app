@@ -607,3 +607,95 @@ select {
     height: 30px;
   }
 }
+
+@media (max-width: 1024px) {
+  .custom-modal-container {
+    width: 80%; /* Reduced width for tablets */
+    padding: 15px;
+    max-height: 90vh; /* Limit height to 90% of viewport height */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+  }
+
+  .custom-modal-content {
+    flex-direction: column;
+  }
+
+  .custom-modal-left, .custom-modal-right {
+    width: 100%;
+    min-width: 100%; /* Make sure both sections take up the full width */
+    margin-bottom: 20px; /* Add some space between sections */
+  }
+
+  .custom-product-image {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .custom-modal-container {
+    width: 90%; /* Reduced width for smaller screens */
+    padding: 10px;
+    max-height: 80vh; /* Further reduce the height for smaller screens */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+  }
+
+  .custom-modal-left, .custom-modal-right {
+    min-width: 100%; /* Full width for smaller screens */
+    padding: 10px;
+  }
+
+  .custom-product-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .custom-textarea {
+    height: 80px;
+  }
+
+  .custom-save-button {
+    margin-left: 0;
+    width: 100%; /* Button takes full width */
+  }
+
+  .custom-modal-close {
+    top: 8px;
+    right: 8px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-modal-container {
+    width: 100%; /* Full width on very small screens */
+    padding: 10px;
+    max-height: 80vh; /* Limit height on very small screens */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+  }
+
+  .custom-modal-left, .custom-modal-right {
+    padding: 8px;
+    margin-bottom: 15px; /* Add margin for mobile */
+  }
+
+  .custom-product-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .custom-textarea {
+    height: 60px; /* Shorter textarea for small screens */
+  }
+
+  .custom-save-button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .custom-modal-close {
+    top: 5px;
+    right: 5px;
+    font-size: 14px;
+  }
+}
