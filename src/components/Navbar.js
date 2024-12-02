@@ -8,10 +8,12 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const Navbar = () => {
   const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
-
+  const [totalDeliveredOrders, setTotalDeliveredOrders] = useState(0);
+  const [totalRaw, setTotalRaw] = useState(0);
+  const [totalInventory, setTotalInventory] = useState(0);
   // State to manage displayed products
   const [products, setProducts] = useState([]);
-
+  const [totalSales, setTotalSales] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   useEffect(() => {
     const fetchProducts = async () => {
@@ -37,6 +39,85 @@ const Navbar = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    const fetchTotalSales = async () => {
+      try {
+        const response = await fetch('https://inventory-app-b.vercel.app/product/getAllSlaes'); // Replace with your API endpoint
+        const data = await response.json();
+        if (data?.totalSales !== undefined) {
+          setTotalSales(data.totalSales);
+        } else {
+          console.error('Invalid response:', data);
+        }
+      } catch (error) {
+        console.error('Error fetching total sales:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTotalSales();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchTotalDeliveredOrders = async () => {
+      try {
+        const response = await fetch("https://inventory-app-b.vercel.app/product/getTotalOrders"); // Update with your API endpoint
+        const data = await response.json();
+
+        if (response.ok) {
+          setTotalDeliveredOrders(data.totalOrders);
+        } else {
+          console.error("Failed to fetch total delivered orders:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching total delivered orders:", error);
+      }
+    };
+
+    fetchTotalDeliveredOrders();
+  }, []);
+
+  useEffect(() => {
+    const fetchTotalRaw = async () => {
+      try {
+        const response = await fetch("https://inventory-app-b.vercel.app/product/getAllRawMaterial"); // Update with your API endpoint
+        const data = await response.json();
+
+        if (response.ok) {
+          setTotalRaw(data.totalOrders);
+        } else {
+          console.error("Failed to fetch total delivered orders:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching total delivered orders:", error);
+      }
+    };
+
+    fetchTotalRaw();
+  }, []);
+
+  useEffect(() => {
+    const fetchTotalInventory = async () => {
+      try {
+        const response = await fetch("https://inventory-app-b.vercel.app/product/getTotalInventory"); // Update with your API endpoint
+        const data = await response.json();
+
+        if (response.ok) {
+          setTotalInventory(data.totalOrders);
+        } else {
+          console.error("Failed to fetch total delivered orders:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching total delivered orders:", error);
+      }
+    };
+
+    fetchTotalInventory();
+  }, []);
+
   return (
     <div>
       {/* Navbar */}
@@ -160,7 +241,7 @@ const Navbar = () => {
           </div>
           <div className="box-body">
             <h3 className="box-title">TOTAL PRODUCT IN INVENTORY</h3>
-            <p className="box-value">10,226</p>
+            <p className="box-value">{totalInventory}</p>
           </div>
         </div>
         <div className="box">
@@ -170,7 +251,7 @@ const Navbar = () => {
           </div>
           <div className="box-body">
             <h3 className="box-title">TOTAL RAW MATERIAL</h3>
-            <p className="box-value">2,000,508</p>
+            <p className="box-value">{totalRaw}</p>
           </div>
         </div>
         <div className="box">
@@ -179,8 +260,8 @@ const Navbar = () => {
             <span className="box-percentage">10.5%</span>
           </div>
           <div className="box-body">
-            <h3 className="box-title">TOTAL OUT OF STOCK PRODUCT</h3>
-            <p className="box-value">5,680</p>
+            <h3 className="box-title">TOTAL Sales</h3>
+            <p className="box-value">฿:{totalSales.toFixed(2)}</p>
           </div>
         </div>
         <div className="box">
@@ -189,8 +270,8 @@ const Navbar = () => {
             <span className="box-percentage">10.5%</span>
           </div>
           <div className="box-body">
-            <h3 className="box-title">TOTAL HIGH STOCK PRODUCT</h3>
-            <p className="box-value">878</p>
+            <h3 className="box-title">TOTAL Delivered Orders</h3>
+            <p className="box-value">{totalDeliveredOrders}</p>
           </div>
         </div>
       </div>
