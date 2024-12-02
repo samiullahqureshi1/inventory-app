@@ -169,7 +169,7 @@ const Navbar = () => {
           <div className="stock-level-content">
             <div className="stock-chart">
               <div className="chart-circle">
-                <p className="active-products">8,572</p>
+                <p className="active-products">{totalInventory}</p>
                 <p className="active-text">Active Product</p>
               </div>
             </div>
@@ -223,7 +223,7 @@ const Navbar = () => {
                     </span>
                   </span>
                   <span className="product-quantity">Quantity: {product.quantity || 0}</span>
-                  <span className="product-price">Price: ${product.price || "N/A"}</span>
+                  <span className="product-price">Price: ฿{product.price || "N/A"}</span>
                   </p>
                 </div>
               </div>
