@@ -296,11 +296,11 @@ const LoginSignup = () => {
               value={confirmPassword} 
               onChange={(e) => setConfirmPassword(e.target.value)} 
             />
-            <select value={role} onChange={(e) => setRole(e.target.value)}
+            {/* <select value={role} onChange={(e) => setRole(e.target.value)}
              className="auth-select">
               <option value="sales">Sales</option>
               <option value="production">Production</option>
-            </select>
+            </select> */}
             <button className="auth-button" onClick={handleSubmitSignup}>
               Signup
             </button>

@@ -160,8 +160,8 @@ const OrderForm = () => {
           >
             <option value="Pending">Pending</option>
             <option value="Processing">Processing</option>
-            <option value="Completed">Completed</option>
-            <option value="Cancelled">Cancelled</option>
+            {/* <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option> */}
           </select>
         </div>
         <div className="form-group">
