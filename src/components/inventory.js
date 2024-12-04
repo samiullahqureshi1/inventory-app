@@ -271,11 +271,11 @@ const Inventory = () => {
         ) : (
           products.map((product) => (
             <div className="product-card" key={product?._id}>
-              <img
+              {/* <img
                 src={product?.images && product?.images?.length > 0 ? product?.images[0] : "https://via.placeholder.com/150"}
                 alt={product?.product_name}
                 className="product-image"
-              />
+              /> */}
               <div className="product-details">
                 <h3 className="product-name">{product?.product_name || "Unnamed Product"}</h3>
                 <div className="product-info">
@@ -326,14 +326,14 @@ const Inventory = () => {
             </button>
             <div className="custom-modal-content">
               <div className="custom-modal-left">
-                <h2>Product Preview</h2>
+                {/* <h2>Product Preview</h2>
                 <div className="custom-product-image-container">
                   <img
                     src={imagePreviews[0] || "https://via.placeholder.com/150"}
                     alt="Product Preview"
                     className="custom-product-image"
                   />
-                </div>
+                </div> */}
               </div>
 
               <div className="custom-modal-right">
@@ -414,7 +414,7 @@ const Inventory = () => {
                       className="custom-textarea"
                     />
                   </div>
-                  <div className="custom-form-group">
+                  {/* <div className="custom-form-group">
                     <label>images</label>
                     <input
                       type="file"
@@ -429,7 +429,7 @@ const Inventory = () => {
                         marginBottom: '10px',
                       }}
                     />
-                  </div>
+                  </div> */}
                   <div className="form-actions">
                   <button className="btn-submit" type="submit" enable={formLoading}>
                   {formLoading ? "Submitting..." : isEditing ? "Update Product" : "Add Product"}

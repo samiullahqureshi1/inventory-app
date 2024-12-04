@@ -80,6 +80,9 @@ const History = () => {
                 Sales
               </Link>
             </li>
+            <li>
+              <Link to="/employeement" style={{ color: 'white', textDecoration: 'none' }}>HR</Link>
+            </li>
           </ul>
         </div>
       </div>

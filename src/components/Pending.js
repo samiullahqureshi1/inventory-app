@@ -209,8 +209,16 @@ const Pending = () => {
                 to="/order-completed"
                 style={{ color: "white", textDecoration: "none" }}
               >
-                Order
+                Orders
               </Link>
+            </li>
+            <li>
+              <Link to="/weekly-sales" style={{ color: "white", textDecoration: "none" }}>
+                Sales
+              </Link>
+            </li>
+            <li>
+              <Link to="/employeement" style={{ color: 'white', textDecoration: 'none' }}>HR</Link>
             </li>
           </ul>
         </div>

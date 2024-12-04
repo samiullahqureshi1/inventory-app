@@ -93,7 +93,7 @@ const Order = () => {
           <p className="product-titles">Sales</p>
           <span className="total-product">Total Sales: ฿{totalSales.toFixed(2)}</span>
           <Link to="/weekly-sales">
-            <button className="new-button">Daily</button>
+            <button className="new-button">Weekly</button>
           </Link>
           <Link to="/monthly-sales">
             <button className="new-button">Monthly</button>

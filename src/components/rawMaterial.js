@@ -75,7 +75,7 @@ const RawMaterial = () => {
 
   // Handle edit and delete (you can define actual functionality for these)
   const handleEdit = (productId) => {
-    const productToEdit = products.find((product) => product._id === productId);
+    const productToEdit = products.find((product) => product?._id === productId);
     if (!productToEdit) return;
 
     setFormData({
@@ -110,11 +110,11 @@ const RawMaterial = () => {
     } else {
       const data = await response.json();
       setAlertType("error");
-      setAlertMessage(data.message || "Failed to delete product.");
+      setAlertMessage(data.message || "Failed to delete product?.");
     }
   } catch (error) {
     setAlertType("error");
-    setAlertMessage("Error deleting product. Please try again.");
+    setAlertMessage("Error deleting product?. Please try again.");
   } finally {
     setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
   }
@@ -158,7 +158,7 @@ const RawMaterial = () => {
           // Update product in UI
           setProducts((prev) =>
             prev.map((product) =>
-              product._id === activeProduct ? { ...product, ...data.product } : product
+              product?._id === activeProduct ? { ...product, ...data.product } : product
             )
           );
         } else {
@@ -229,7 +229,7 @@ const RawMaterial = () => {
         </div>
         <div className="action">
           <div className="search-bars">
-            <input type="text" placeholder="Search product..." />
+            <input type="text" placeholder="Search product?..." />
             <button className="search-icons">🔍</button>
           </div>
           <button className="add-products" onClick={toggleModal}>
@@ -246,25 +246,25 @@ const RawMaterial = () => {
           <p>No Material found.</p>
         ) : (
           products.map((product) => (
-            <div className="product-card" key={product._id}>
+            <div className="product-card" key={product?._id}>
               {/* <img
-                src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/150"}
-                alt={product.product_name}
+                src={product?.images && product?.images.length > 0 ? product?.images[0] : "https://via.placeholder.com/150"}
+                alt={product?.product_name}
                 className="product-image"
               /> */}
               <div className="product-details">
-                <h3 className="product-name">{product.product_name || "Unnamed Product"}</h3>
+                <h3 className="product-name">{product?.product_name || "Unnamed Product"}</h3>
                 <div className="product-info">
-                  <span className="product-description">{product.discription || "No description available"}</span>
-                  <span className="product-description">{product.category || "No category available"}</span>
+                  <span className="product-description">{product?.discription || "No description available"}</span>
+                  <span className="product-description">{product?.category || "No category available"}</span>
 
                   <span className="product-status">
-                    <span style={{ color: product.in_stock ? "green" : "red" }}>
-                      {product.in_stock ? "In Stock" : "Out of Stock"}
+                    <span style={{ color: product?.in_stock ? "green" : "red" }}>
+                      {product?.in_stock ? "In Stock" : "Out of Stock"}
                     </span>
                   </span>
-                  <span className="product-quantity">Quantity: {product.quantity || 0}</span>
-                  <span className="product-price">Price: ฿{product.price || "N/A"}</span>
+                  <span className="product-quantity">Quantity: {product?.quantity || 0}</span>
+                  <span className="product-price">Price: ฿{product?.price || "N/A"}</span>
                 </div>
               </div>
 
@@ -272,14 +272,14 @@ const RawMaterial = () => {
               <div className="options-container">
                 <span
                   className="three-dots"
-                  onClick={() => handleOptionsToggle(product._id)}
+                  onClick={() => handleOptionsToggle(product?._id)}
                 >
                   ⋮
                 </span>
-                {activeProduct === product._id && (
+                {activeProduct === product?._id && (
                   <div className="options-box">
-                    <button onClick={() => handleEdit(product._id)}>Edit</button>
-                    <button onClick={() => handleDelete(product._id)}>Delete</button>
+                    <button onClick={() => handleEdit(product?._id)}>Edit</button>
+                    <button onClick={() => handleDelete(product?._id)}>Delete</button>
                   </div>
                 )}
               </div>
