@@ -215,6 +215,9 @@ const OutStock = () => {
             <li>
               <Link to="/weekly-sales" style={{ color: 'white', textDecoration: 'none' }}>Sales</Link>
             </li>
+            <li>
+              <Link to="/employeement" style={{ color: 'white', textDecoration: 'none' }}>HR</Link>
+            </li>
         </ul>
       </div>
     </div>

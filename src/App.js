@@ -13,12 +13,17 @@ import Pending from './components/Pending';
 import Order from './components/Order';
 import History from './components/History';
 import Monthly from './components/Monthly';
+import Hr from './components/HR';
+import Employee from './components/Employee';
+
+
 function App() {
   return (
     <Router>
       <div className="App">
         
         <Routes>
+        
           <Route path="/dashboard" element={<Navbar />} />
           <Route path="/" element={<LoginSignup />} />
           <Route path="/inventory" element={<Inventory />} />
@@ -32,6 +37,8 @@ function App() {
           <Route path="/weekly-sales" element={<Order />} />
           <Route path="/sales-history" element={<History />} />
           <Route path="/monthly-sales" element={<Monthly />} />
+          <Route path="/employeement" element={<Hr />} />
+          <Route path="/add-employee" element={<Employee />} />
         </Routes>
       </div>
     </Router>
@@ -39,3 +46,4 @@ function App() {
 }
 
 export default App;
+

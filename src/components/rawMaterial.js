@@ -214,6 +214,9 @@ const RawMaterial = () => {
             <li>
               <Link to="/weekly-sales" style={{ color: 'white', textDecoration: 'none' }}>Sales</Link>
             </li>
+            <li>
+              <Link to="/employeement" style={{ color: 'white', textDecoration: 'none' }}>HR</Link>
+            </li>
         </ul>
       </div>
     </div>
@@ -244,11 +247,11 @@ const RawMaterial = () => {
         ) : (
           products.map((product) => (
             <div className="product-card" key={product._id}>
-              <img
+              {/* <img
                 src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/150"}
                 alt={product.product_name}
                 className="product-image"
-              />
+              /> */}
               <div className="product-details">
                 <h3 className="product-name">{product.product_name || "Unnamed Product"}</h3>
                 <div className="product-info">
@@ -294,13 +297,13 @@ const RawMaterial = () => {
             </button>
             <div className="custom-modal-content">
               <div className="custom-modal-left">
-                <h2>Material Preview</h2>
+                {/* <h2>Material Preview</h2> */}
                 <div className="custom-product-image-container">
-                  <img
+                  {/* <img
                     src={imagePreviews[0] || "https://via.placeholder.com/150"}
                     alt="Product Preview"
                     className="custom-product-image"
-                  />
+                  /> */}
                 </div>
               </div>
 
@@ -399,7 +402,7 @@ const RawMaterial = () => {
                       className="custom-textarea"
                     />
                   </div>
-                  <div className="custom-form-group">
+                  {/* <div className="custom-form-group">
                     <label>Images</label>
                     <input
                       type="file"
@@ -414,7 +417,7 @@ const RawMaterial = () => {
                         marginBottom: '10px',
                       }}
                     />
-                  </div>
+                  </div> */}
                   <div className="form-actions">
                   <button className="btn-submit" type="submit" enable={formLoading}>
                   {formLoading ? "Submitting..." : isEditing ? "Update Product" : "Add Product"}

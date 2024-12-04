@@ -60,7 +60,7 @@ const Inventory = () => {
   //       previews.push(reader.result);
   //       if (previews.length === files.length) {
   //         setImagePreviews((prev) => [...prev, ...previews]);
-  //         setFormData((prev) => ({ ...prev, images: files }));
+  //         setFormData((prev) => ({ ...prev, images?: files }));
   //       }
   //     };
   //     reader.readAsDataURL(file);
@@ -81,7 +81,7 @@ const Inventory = () => {
           setImagePreviews((prev) => [...prev, ...previews]);
           setFormData((prev) => ({
             ...prev,
-            images: [...prev.images, ...files], // Update the images array
+            images: [...prev.images, ...files], // Update the images? array
           }));
         }
       };
@@ -96,7 +96,7 @@ const Inventory = () => {
 
   // Handle edit and delete (you can define actual functionality for these)
   const handleEdit = (productId) => {
-    const productToEdit = products.find((product) => product._id === productId);
+    const productToEdit = products.find((product) => product?._id === productId);
     if (!productToEdit) return;
 
     setFormData({
@@ -105,7 +105,7 @@ const Inventory = () => {
       price: productToEdit.price || 0,
       category:productToEdit.category || "",
       discription: productToEdit.discription || "",
-      images: [] // No need to populate images, as they aren't directly editable
+      images: [] // No need to populate images?, as they aren't directly editable
     });
 
     setImagePreviews(productToEdit.images || []);
@@ -125,17 +125,17 @@ const Inventory = () => {
     });
 
     if (response.ok) {
-      setProducts((prev) => prev.filter((product) => product._id !== productId)); // Update UI
+      setProducts((prev) => prev.filter((product) => product?._id !== productId)); // Update UI
       setAlertType("success");
       setAlertMessage("Product successfully deleted.");
     } else {
       const data = await response.json();
       setAlertType("error");
-      setAlertMessage(data.message || "Failed to delete product.");
+      setAlertMessage(data.message || "Failed to delete product?.");
     }
   } catch (error) {
     setAlertType("error");
-    setAlertMessage("Error deleting product. Please try again.");
+    setAlertMessage("Error deleting product?. Please try again.");
   } finally {
     setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
   }
@@ -151,8 +151,8 @@ const Inventory = () => {
     newProductData.append("discription", formData.discription); // Corrected field name
     newProductData.append("category", formData.category); // Corrected field name
 
-    // Append images to FormData
-    formData.images.forEach((image) => {
+    // Append images? to FormData
+    formData.images?.forEach((image) => {
       newProductData.append("images", image);
     });
 
@@ -179,7 +179,7 @@ const Inventory = () => {
           // Update product in UI
           setProducts((prev) =>
             prev.map((product) =>
-              product._id === activeProduct ? { ...product, ...data.product } : product
+              product?._id === activeProduct ? { ...product, ...data.product } : product
             )
           );
         } else {
@@ -239,6 +239,9 @@ const Inventory = () => {
             <li>
               <Link to="/weekly-sales" style={{ color: 'white', textDecoration: 'none' }}>Sales</Link>
             </li>
+            <li>
+              <Link to="/employeement" style={{ color: 'white', textDecoration: 'none' }}>HR</Link>
+            </li>
         </ul>
       </div>
     </div>
@@ -250,7 +253,7 @@ const Inventory = () => {
         </div>
         <div className="action">
           <div className="search-bars">
-            <input type="text" placeholder="Search product..." />
+            <input type="text" placeholder="Search product?..." />
             <button className="search-icons">🔍</button>
           </div>
           <button className="add-products" onClick={toggleModal}>
@@ -267,25 +270,25 @@ const Inventory = () => {
           <p>No products found.</p>
         ) : (
           products.map((product) => (
-            <div className="product-card" key={product._id}>
+            <div className="product-card" key={product?._id}>
               <img
-                src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/150"}
-                alt={product.product_name}
+                src={product?.images && product?.images?.length > 0 ? product?.images[0] : "https://via.placeholder.com/150"}
+                alt={product?.product_name}
                 className="product-image"
               />
               <div className="product-details">
-                <h3 className="product-name">{product.product_name || "Unnamed Product"}</h3>
+                <h3 className="product-name">{product?.product_name || "Unnamed Product"}</h3>
                 <div className="product-info">
-                  <span className="product-description">{product.discription || "No description available"}</span>
-                  <span className="product-description">{product.category || "No category available"}</span>
+                  <span className="product-description">{product?.discription || "No description available"}</span>
+                  <span className="product-description">{product?.category || "No category available"}</span>
 
                   <span className="product-status">
-                    <span style={{ color: product.in_stock ? "green" : "red" }}>
-                      {product.in_stock ? "In Stock" : "Out of Stock"}
+                    <span style={{ color: product?.in_stock ? "green" : "red" }}>
+                      {product?.in_stock ? "In Stock" : "Out of Stock"}
                     </span>
                   </span>
-                  <span className="product-quantity">Quantity: {product.quantity || 0}</span>
-                  <span className="product-price">Price: ฿{product.price || "N/A"}</span>
+                  <span className="product-quantity">Quantity: {product?.quantity || 0}</span>
+                  <span className="product-price">Price: ฿{product?.price || "N/A"}</span>
                 </div>
               </div>
 
@@ -293,14 +296,14 @@ const Inventory = () => {
               <div className="options-container">
                 <span
                   className="three-dots"
-                  onClick={() => handleOptionsToggle(product._id)}
+                  onClick={() => handleOptionsToggle(product?._id)}
                 >
                   ⋮
                 </span>
-                {activeProduct === product._id && (
+                {activeProduct === product?._id && (
                   <div className="options-box">
-                    <button onClick={() => handleEdit(product._id)}>Edit</button>
-                    <button onClick={() => handleDelete(product._id)}>Delete</button>
+                    <button onClick={() => handleEdit(product?._id)}>Edit</button>
+                    <button onClick={() => handleDelete(product?._id)}>Delete</button>
                   </div>
                 )}
               </div>
@@ -412,7 +415,7 @@ const Inventory = () => {
                     />
                   </div>
                   <div className="custom-form-group">
-                    <label>Images</label>
+                    <label>images</label>
                     <input
                       type="file"
                       multiple

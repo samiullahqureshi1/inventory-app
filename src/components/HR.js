@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Inventory.css";
 import { Link } from "react-router-dom";
 
-const Sales = () => {
+const Hr = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -20,7 +20,7 @@ const Sales = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('https://inventory-app-b.vercel.app/product/getorder');
+        const response = await fetch('https://inventory-app-b.vercel.app/product/getEmployee');
         const text = await response.text();
         console.log(text);
 
@@ -62,7 +62,7 @@ const Sales = () => {
 
     try {
       const response = await fetch(
-        `https://inventory-app-b.vercel.app/product/order/${productId}`,
+        `https://inventory-app-b.vercel.app/product/deleteEmployee/${productId}`,
         {
           method: "DELETE",
         }
@@ -73,15 +73,15 @@ const Sales = () => {
           prev.filter((product) => product._id !== productId)
         ); // Update UI
         setAlertType("success");
-        setAlertMessage("order successfully deleted.");
+        setAlertMessage("data successfully deleted.");
       } else {
         const data = await response.json();
         setAlertType("error");
-        setAlertMessage(data.message || "Failed to delete order.");
+        setAlertMessage(data.message || "Failed to delete data.");
       }
     } catch (error) {
       setAlertType("error");
-      setAlertMessage("Error deleting order. Please try again.");
+      setAlertMessage("Error deleting data. Please try again.");
     } finally {
       setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
     }
@@ -156,19 +156,19 @@ const Sales = () => {
       {/* Dashboard Section */}
       <div className="dashboard-sections">
         <div className="product-infos">
-          <p className="product-titles">Order</p>
-          <span className="total-product">{products.length} total order</span>
-          <Link to='/order-completed'><button className="new-button">Delivered</button></Link>
+          <p className="product-titles">HR</p>
+          <span className="total-product">{products.length} total employee</span>
+          {/* <Link to='/order-completed'><button className="new-button">Delivered</button></Link>
           <Link to='/order-proccessing'><button className="new-button">Proccessing</button></Link>
-          <Link to='/order-pending'><button className="new-button">Pending</button></Link>
+          <Link to='/order-pending'><button className="new-button">Pending</button></Link> */}
         </div>
         <div className="action">
           <div className="search-bars">
             <input type="text" placeholder="Search product..." />
             <button className="search-icons">🔍</button>
           </div>
-        <Link to={'/add-order'}> <button className="add-products" onClick={toggleModal}>
-            Add Order
+        <Link to={'/add-employee'}> <button className="add-products" onClick={toggleModal}>
+            Add Employee
           </button></Link> 
         </div>
       </div>
@@ -176,9 +176,9 @@ const Sales = () => {
       {/* Product List Section */}
       <div className="product-list">
         {loading ? (
-          <p>Loading orders...</p>
+          <p>Loading employee data...</p>
         ) : products.length === 0 ? (
-          <p>No completed order found.</p>
+          <p>No Employee data found.</p>
         ) : (
           products.map((product) => (
             <div className="product-card" key={product._id}>
@@ -188,16 +188,18 @@ const Sales = () => {
                 className="product-image"
               /> */}
               <div className="product-details">
-                <h3 className="product-name">{product.product || "Unnamed Product"}</h3>
+                <h3 className="product-name">{product.name || "No Name"}</h3>
                 <div className="product-info">
-                  <span className="product-description">Quantity:{product.quantity || "No description available"}</span>
-                  <span className="product-description">฿ {product.price || "No category available"}</span>
+                  <span className="product-description">Email:{product.email || "No email available"}</span>
+                  <span className="product-description">PH {product.phone || "No phone number available"}</span>
 
                   
-                  <span className="product-quantity">Discount: ฿{product.discount || 0}</span>
-                  <span className="product-price">Total Price: ฿{product.totalPrice }</span>
+                  <span className="product-quantity">designation: {product.designation || 0}</span>
+                  <span className="product-price">Department: {product.department }</span>
+                  <span className="product-price">salary: {product.salary }</span>
+                  <span className="product-price">Address: {product.address }</span>
                   <span className="product-price">status: {product.status }</span>
-                 
+                  
                 </div>
               </div>
 
@@ -226,7 +228,7 @@ const Sales = () => {
   );
 };
 
-export default Sales;
+export default Hr;
 
 
 

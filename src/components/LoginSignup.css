@@ -67,7 +67,7 @@
     text-align: center;
 }
 
-input {
+input,select {
     padding: 10px;
     font-size: 16px;
     border: 1px solid #b0b0b0;
@@ -75,7 +75,9 @@ input {
     background-color: #2b2e38;
     color: white;
 }
-
+select{
+    cursor: pointer;
+}
 .auth-button {
     padding: 10px;
     font-size: 16px;
@@ -142,7 +144,7 @@ input:focus {
         font-size: 18px;
     }
 
-    input, .auth-button {
+    input,select, .auth-button {
         font-size: 14px;
         padding: 7px;
     }
