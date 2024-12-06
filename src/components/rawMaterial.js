@@ -20,7 +20,8 @@ const RawMaterial = () => {
     price: 0,
     discription: "",  // Corrected field name
     category:"",
-    images: []
+    images: [],
+    expiry_date: "",
   });
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -84,6 +85,7 @@ const RawMaterial = () => {
       price: productToEdit.price || 0,
       discription: productToEdit.discription || "",
       category:productToEdit.category || '',
+      expiry_date:productToEdit.expiry_date || '',
       images: [] // No need to populate images, as they aren't directly editable
     });
 
@@ -129,6 +131,7 @@ const RawMaterial = () => {
     newProductData.append("price", formData.price);
     newProductData.append("discription", formData.discription); // Corrected field name
     newProductData.append("category", formData.category); // Corrected field name
+    newProductData.append("expiry_date", formData.expiry_date); // Include expiry_date
 
     // Append images to FormData
     formData.images.forEach((image) => {
@@ -165,7 +168,8 @@ const RawMaterial = () => {
           // Add new product to UI
           setProducts((prev) => [...prev, data.product]);
         }
-        toggleModal();
+        toggleModal(); // Close the modal
+        window.location.reload();
       } else {
         setAlertType("error");
         setAlertMessage(data.message || "Failed to submit form.");
@@ -177,6 +181,11 @@ const RawMaterial = () => {
       setFormLoading(false);
       setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
     }
+  };
+  const formatDate = (date) => {
+    if (!date) return "";
+    const options = { year: "numeric", month: "numeric", day: "numeric" };
+    return new Date(date).toLocaleDateString(undefined, options); // e.g., December 31, 2024
   };
   return (
     <div>
@@ -265,6 +274,8 @@ const RawMaterial = () => {
                   </span>
                   <span className="product-quantity">Quantity: {product?.quantity || 0}</span>
                   <span className="product-price">Price: ฿{product?.price || "N/A"}</span>
+                  <span className="product-price">ExpiresAt: {formatDate(product?.expiry_date) }</span>
+
                 </div>
               </div>
 
@@ -393,6 +404,22 @@ const RawMaterial = () => {
                       }}
                     />
                   </div>
+                  <div className="custom-form-group">
+  <label>Expiry Date</label>
+  <input
+    type="date"
+    value={formData.expiry_date}
+    onChange={(e) => setFormData({ ...formData, expiry_date: e.target.value })}
+    style={{
+      width: "100%",
+      padding: "8px",
+      border: "1px solid #242b37",
+      borderRadius: "4px",
+      fontSize: "14px",
+      marginBottom: "10px",
+    }}
+  />
+</div>
                   <div className="custom-form-group">
                     <label>Description</label>
                     <textarea

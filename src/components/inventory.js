@@ -19,7 +19,8 @@ const Inventory = () => {
     price: 0,
     category:"",
     discription: "",  // Corrected field name
-    images: []
+    images: [],
+    expiry_date: "",
   });
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -44,6 +45,10 @@ const Inventory = () => {
 
     fetchProducts();
   }, []);
+ 
+
+  
+  
 
   const toggleModal = () => {
     setShowModal((prev) => !prev);
@@ -69,26 +74,7 @@ const Inventory = () => {
 
   // Toggle the options visibility for a specific product
   
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    const previews = [];
-  
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        previews.push(reader.result);
-        if (previews.length === files.length) {
-          setImagePreviews((prev) => [...prev, ...previews]);
-          setFormData((prev) => ({
-            ...prev,
-            images: [...prev.images, ...files], // Update the images? array
-          }));
-        }
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-  
+ 
   
   const handleOptionsToggle = (productId) => {
     setActiveProduct(activeProduct === productId ? null : productId); // Toggle visibility
@@ -96,7 +82,7 @@ const Inventory = () => {
 
   // Handle edit and delete (you can define actual functionality for these)
   const handleEdit = (productId) => {
-    const productToEdit = products.find((product) => product?._id === productId);
+    const productToEdit = products.find((product) => product._id === productId);
     if (!productToEdit) return;
 
     setFormData({
@@ -105,6 +91,7 @@ const Inventory = () => {
       price: productToEdit.price || 0,
       category:productToEdit.category || "",
       discription: productToEdit.discription || "",
+      expiry_date:productToEdit.expiry_date || '',
       images: [] // No need to populate images?, as they aren't directly editable
     });
 
@@ -141,25 +128,90 @@ const Inventory = () => {
   }
 };
 
+  // const handleFormSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setFormLoading(true); 
+  //   const newProductData = new FormData();
+  //   newProductData.append("product_name", formData.product_name); // Corrected field name
+  //   newProductData.append("quantity", formData.quantity); // Corrected field name
+  //   newProductData.append("price", formData.price);
+  //   newProductData.append("discription", formData.discription); // Corrected field name
+  //   newProductData.append("category", formData.category); // Corrected field name
+
+  //   // Append images? to FormData
+  //   formData.images?.forEach((image) => {
+  //     newProductData.append("images", image);
+  //   });
+
+  //   try {
+  //     const response = isEditing
+  //       ? await fetch(
+  //           `https://inventory-app-b.vercel.app/product/update_product/${activeProduct}`, // Use product ID in URL
+  //           {
+  //             method: "PATCH",
+  //             body: newProductData,
+  //           }
+  //         )
+  //       : await fetch("https://inventory-app-b.vercel.app/product/create_product", {
+  //           method: "POST",
+  //           body: newProductData,
+  //         });
+
+  //     const data = await response.json();
+
+  //     if (response.ok) {
+  //       setAlertType("success");
+  //       setAlertMessage(isEditing ? "Product updated successfully!" : "Product added successfully!");
+  //       if (isEditing) {
+  //         // Update product in UI
+  //         setProducts((prev) =>
+  //           prev.map((product) =>
+  //             product?._id === activeProduct ? { ...product, ...data.product } : product
+  //           )
+  //         );
+  //       } else {
+  //         // Add new product to UI
+  //         setProducts((prev) => [...prev, data.product]);
+  //       }
+  //       toggleModal();
+  //     } else {
+  //       setAlertType("error");
+  //       setAlertMessage(data.message || "Failed to submit form.");
+  //     }
+  //   } catch (error) {
+  //     setAlertType("error");
+  //     setAlertMessage(error.message ||"Error submitting form. Please try again.");
+  //   } finally {
+  //     setFormLoading(false);
+  //     setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
+  //   }
+  // };
+  const formatDate = (date) => {
+    if (!date) return "";
+    const options = { year: "numeric", month: "numeric", day: "numeric" };
+    return new Date(date).toLocaleDateString(undefined, options); // e.g., December 31, 2024
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setFormLoading(true); 
+    setFormLoading(true);
+    
     const newProductData = new FormData();
-    newProductData.append("product_name", formData.product_name); // Corrected field name
-    newProductData.append("quantity", formData.quantity); // Corrected field name
+    newProductData.append("product_name", formData.product_name);
+    newProductData.append("quantity", formData.quantity);
     newProductData.append("price", formData.price);
-    newProductData.append("discription", formData.discription); // Corrected field name
-    newProductData.append("category", formData.category); // Corrected field name
+    newProductData.append("discription", formData.discription);
+    newProductData.append("category", formData.category);
+    newProductData.append("expiry_date", formData.expiry_date); // Include expiry_date
 
-    // Append images? to FormData
     formData.images?.forEach((image) => {
       newProductData.append("images", image);
     });
-
+  
     try {
       const response = isEditing
         ? await fetch(
-            `https://inventory-app-b.vercel.app/product/update_product/${activeProduct}`, // Use product ID in URL
+            `https://inventory-app-b.vercel.app/product/update_product/${activeProduct}`,
             {
               method: "PATCH",
               body: newProductData,
@@ -169,37 +221,43 @@ const Inventory = () => {
             method: "POST",
             body: newProductData,
           });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         setAlertType("success");
-        setAlertMessage(isEditing ? "Product updated successfully!" : "Product added successfully!");
+        setAlertMessage(
+          isEditing ? "Product updated successfully!" : "Product added successfully!"
+        );
+  
         if (isEditing) {
-          // Update product in UI
           setProducts((prev) =>
             prev.map((product) =>
               product?._id === activeProduct ? { ...product, ...data.product } : product
             )
           );
         } else {
-          // Add new product to UI
           setProducts((prev) => [...prev, data.product]);
         }
-        toggleModal();
+  
+        toggleModal(); // Close the modal
+        window.location.reload(); // Reload the page after modal is closed
       } else {
         setAlertType("error");
         setAlertMessage(data.message || "Failed to submit form.");
       }
     } catch (error) {
       setAlertType("error");
-      setAlertMessage(error.message ||"Error submitting form. Please try again.");
+      setAlertMessage(error.message || "Error submitting form. Please try again.");
     } finally {
       setFormLoading(false);
       setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
     }
   };
+  
 
+  
+  
  
   return (
     <div>
@@ -253,7 +311,7 @@ const Inventory = () => {
         </div>
         <div className="action">
           <div className="search-bars">
-            <input type="text" placeholder="Search product?..." />
+            <input type="text" placeholder="Search product..." />
             <button className="search-icons">🔍</button>
           </div>
           <button className="add-products" onClick={toggleModal}>
@@ -277,10 +335,10 @@ const Inventory = () => {
                 className="product-image"
               /> */}
               <div className="product-details">
-                <h3 className="product-name">{product?.product_name || "Unnamed Product"}</h3>
+                <h3 className="product-name">{product?.product_name }</h3>
                 <div className="product-info">
-                  <span className="product-description">{product?.discription || "No description available"}</span>
-                  <span className="product-description">{product?.category || "No category available"}</span>
+                  <span className="product-description">{product?.discription }</span>
+                  <span className="product-description">{product?.category }</span>
 
                   <span className="product-status">
                     <span style={{ color: product?.in_stock ? "green" : "red" }}>
@@ -289,6 +347,8 @@ const Inventory = () => {
                   </span>
                   <span className="product-quantity">Quantity: {product?.quantity || 0}</span>
                   <span className="product-price">Price: ฿{product?.price || "N/A"}</span>
+                  <span className="product-price">ExpiresAt: {formatDate(product?.expiry_date) }</span>
+
                 </div>
               </div>
 
@@ -405,6 +465,22 @@ const Inventory = () => {
                       }}
                     />
                   </div>
+                  <div className="custom-form-group">
+  <label>Expiry Date</label>
+  <input
+    type="date"
+    value={formData.expiry_date}
+    onChange={(e) => setFormData({ ...formData, expiry_date: e.target.value })}
+    style={{
+      width: "100%",
+      padding: "8px",
+      border: "1px solid #242b37",
+      borderRadius: "4px",
+      fontSize: "14px",
+      marginBottom: "10px",
+    }}
+  />
+</div>
                   <div className="custom-form-group">
                     <label>Description</label>
                     <textarea
