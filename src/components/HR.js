@@ -196,7 +196,7 @@ const Hr = () => {
                   
                   <span className="product-quantity">designation: {product.designation || 0}</span>
                   <span className="product-price">Department: {product.department }</span>
-                  <span className="product-price">salary: {product.salary }</span>
+                  <span className="product-price">salary: ฿{product.salary }</span>
                   <span className="product-price">Address: {product.address }</span>
                   <span className="product-price">status: {product.status }</span>
                   

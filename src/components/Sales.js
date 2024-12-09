@@ -197,6 +197,7 @@ const Sales = () => {
                   <span className="product-quantity">Discount: ฿{product.discount || 0}</span>
                   <span className="product-price">Total Price: ฿{product.totalPrice }</span>
                   <span className="product-price">status: {product.status }</span>
+                  <span className="product-price">DeliverAt:{new Date(product.deliveredAt).toLocaleDateString()}</span>
                  
                 </div>
               </div>

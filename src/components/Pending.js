@@ -286,6 +286,8 @@ const Pending = () => {
                   <span className="product-price">
                     status: {product.status}
                   </span>
+                  <span className="product-price">Date:{new Date(product.createdAt).toLocaleDateString()}</span>
+
                   <button
                     className="complete-button"
                     onClick={() => handleCompleteOrder(product._id)}
