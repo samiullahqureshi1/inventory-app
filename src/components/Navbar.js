@@ -227,6 +227,8 @@ const Navbar = () => {
                   </span>
                   <span className="product-quantity">Quantity: {product.quantity || 0}</span>
                   <span className="product-price">Price: ฿{product.price || "N/A"}</span>
+                  <span className="product-price">ExpireAt:{new Date(product.expiry_date).toLocaleDateString()}</span>
+
                   </p>
                 </div>
               </div>
