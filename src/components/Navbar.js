@@ -160,8 +160,8 @@ const Navbar = () => {
       <div className="dashboard-section">
         <p className="dashboard-text">Dashboard</p>
         <div className="buttons-container">
-          <button className="action-btn">Contact Help</button>
-          <button className="action-btn">Quick Action</button>
+          {/* <button className="action-btn">Contact Help</button>
+          <button className="action-btn">Quick Action</button> */}
         </div>
       </div>
 
