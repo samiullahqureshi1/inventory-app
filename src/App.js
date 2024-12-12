@@ -15,6 +15,7 @@ import History from './components/History';
 import Monthly from './components/Monthly';
 import Hr from './components/HR';
 import Employee from './components/Employee';
+import Expired from './components/Expired';
 
 
 function App() {
@@ -39,6 +40,8 @@ function App() {
           <Route path="/monthly-sales" element={<Monthly />} />
           <Route path="/employeement" element={<Hr />} />
           <Route path="/add-employee" element={<Employee />} />
+          <Route path="/epired" element={<Expired />} />
+
         </Routes>
       </div>
     </Router>

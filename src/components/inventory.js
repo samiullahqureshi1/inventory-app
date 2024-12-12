@@ -308,6 +308,9 @@ const Inventory = () => {
         <div className="product-infos">
           <p className="product-titles">Product</p>
           <span className="total-product">{products.length} total products</span>
+          <Link to="/epired">
+            <button className="new-button" style={{fontSize:'10px'}}>Expired Product</button>
+          </Link>
         </div>
         <div className="action">
           <div className="search-bars">
@@ -317,6 +320,7 @@ const Inventory = () => {
           <button className="add-products" onClick={toggleModal}>
             Add Product
           </button>
+          
         </div>
       </div>
 
