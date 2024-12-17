@@ -8,7 +8,10 @@ const OrderForm = () => {
     quantity: 0,
     price: 0,
     discount: 0,
-    status: "Pending", // Default order status
+    customerName: "",
+    customerEmail: "",
+    customerPhone: "",
+    status: "Pending",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -33,13 +36,16 @@ const OrderForm = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://inventory-app-b.vercel.app/product/createorder", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://inventory-app-b.vercel.app/product/createorder",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -49,7 +55,6 @@ const OrderForm = () => {
         return;
       }
 
-      const result = await response.json();
       alert("Order successfully placed!");
       navigate("/order-completed");
     } catch (error) {
@@ -65,14 +70,16 @@ const OrderForm = () => {
       <h2>Place Your Order</h2>
       {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <div className="custom-form-group">
-          <label className="form-label">Product Name</label>
+        <div className="form-group">
+          <label>Product Name</label>
           <input
             type="text"
             name="product"
             placeholder="Enter product name"
             value={formData.product}
             onChange={handleInputChange}
+            className="form-input"
+            required
             style={{
               width: "100%",
               padding: "8px",
@@ -81,16 +88,16 @@ const OrderForm = () => {
               fontSize: "14px",
               marginBottom: "10px",
             }}
-            className="form-input"
           />
         </div>
         <div className="form-group">
-          <label className="form-label">Quantity</label>
+          <label>Quantity</label>
           <input
             type="number"
             name="quantity"
             value={formData.quantity}
             onChange={handleInputChange}
+            className="form-input"
             style={{
               width: "100%",
               padding: "8px",
@@ -99,17 +106,14 @@ const OrderForm = () => {
               fontSize: "14px",
               marginBottom: "10px",
             }}
-            className="form-input"
             required
           />
         </div>
         <div className="form-group">
-          <label className="form-label">Price per Item (฿)</label>
+          <label>Price per Item (฿)</label>
           <input
             type="number"
             name="price"
-            value={formData.price}
-            onChange={handleInputChange}
             style={{
               width: "100%",
               padding: "8px",
@@ -118,17 +122,17 @@ const OrderForm = () => {
               fontSize: "14px",
               marginBottom: "10px",
             }}
+            value={formData.price}
+            onChange={handleInputChange}
             className="form-input"
             required
           />
         </div>
         <div className="form-group">
-          <label className="form-label">Discount (฿)</label>
+          <label>Discount (฿)</label>
           <input
             type="number"
             name="discount"
-            value={formData.discount}
-            onChange={handleInputChange}
             style={{
               width: "100%",
               padding: "8px",
@@ -137,39 +141,56 @@ const OrderForm = () => {
               fontSize: "14px",
               marginBottom: "10px",
             }}
+            value={formData.discount}
+            onChange={handleInputChange}
             className="form-input"
           />
         </div>
         <div className="form-group">
-          <label className="form-label">Order Status</label>
+          <label>Order Status</label>
           <select
             name="status"
             value={formData.status}
-            onChange={handleInputChange}
             style={{
               width: "100%",
               padding: "8px",
-              border: "1px solid gray",
+              border: "1px solid #242b37",
               borderRadius: "4px",
               fontSize: "14px",
               marginBottom: "10px",
-              backgroundColor:'#242b37',
-              color:'white'
             }}
+            onChange={handleInputChange}
             className="form-input"
           >
             <option value="Pending">Pending</option>
             <option value="Processing">Processing</option>
-            {/* <option value="Completed">Completed</option>
-            <option value="Cancelled">Cancelled</option> */}
           </select>
         </div>
         <div className="form-group">
-          <label className="form-label">Total Price (฿)</label>
+          <label>Total Price (฿)</label>
           <input
             type="number"
+            style={{
+              width: "100%",
+              padding: "8px",
+              border: "1px solid #242b37",
+              borderRadius: "4px",
+              fontSize: "14px",
+              marginBottom: "10px",
+            }}
             value={calculateTotal()}
             readOnly
+            className="form-input"
+          />
+        </div>
+        <div className="form-group">
+          <label>Customer Name</label>
+          <input
+            type="text"
+            name="customerName"
+            placeholder="Enter customer name"
+            value={formData.customerName}
+            onChange={handleInputChange}
             style={{
               width: "100%",
               padding: "8px",
@@ -179,13 +200,52 @@ const OrderForm = () => {
               marginBottom: "10px",
             }}
             className="form-input"
+            required
           />
         </div>
-        <div className="form-buttons">
-          <button type="submit" className="publish-btn" disabled={loading}>
-            {loading ? <div className="spinner"></div> : "Place Order"}
-          </button>
+        <div className="form-group">
+          <label>Customer Email</label>
+          <input
+            type="email"
+            name="customerEmail"
+            placeholder="Enter customer email"
+            value={formData.customerEmail}
+            onChange={handleInputChange}
+            className="form-input"
+            style={{
+              width: "100%",
+              padding: "8px",
+              border: "1px solid #242b37",
+              borderRadius: "4px",
+              fontSize: "14px",
+              marginBottom: "10px",
+            }}
+            required
+          />
         </div>
+        <div className="form-group">
+          <label>Customer Phone</label>
+          <input
+            type="tel"
+            name="customerPhone"
+            value={formData.customerPhone}
+            onChange={handleInputChange}
+            className="form-input"
+            style={{
+              width: "100%",
+              padding: "8px",
+              border: "1px solid #242b37",
+              borderRadius: "4px",
+              fontSize: "14px",
+              marginBottom: "10px",
+            }}
+            placeholder="Enter phone number"
+            required
+          />
+        </div>
+        <button type="submit" className="publish-btn" disabled={loading}>
+          {loading ? <div className="spinner"></div> : "Place Order"}
+        </button>
       </form>
     </div>
   );

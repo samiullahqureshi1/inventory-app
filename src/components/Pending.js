@@ -284,6 +284,15 @@ const Pending = () => {
                     Total Price: ฿{product.totalPrice}
                   </span>
                   <span className="product-price">
+                  customerName: {product.customerName}
+                  </span>
+                  <span className="product-price">
+                  customerEmail: {product.customerEmail}
+                  </span>
+                  <span className="product-price">
+                  customerPhone: {product.customerPhone}
+                  </span>
+                  <span className="product-price">
                     status: {product.status}
                   </span>
                   <span className="product-price">Date:{new Date(product.createdAt).toLocaleDateString()}</span>

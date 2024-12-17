@@ -196,6 +196,15 @@ const Sales = () => {
                   
                   <span className="product-quantity">Discount: ฿{product.discount || 0}</span>
                   <span className="product-price">Total Price: ฿{product.totalPrice }</span>
+                  <span className="product-price">
+                  customerName: {product.customerName}
+                  </span>
+                  <span className="product-price">
+                  customerEmail: {product.customerEmail}
+                  </span>
+                  <span className="product-price">
+                  customerPhone: {product.customerPhone}
+                  </span>
                   <span className="product-price">status: {product.status }</span>
                   <span className="product-price">DeliverAt:{new Date(product.deliveredAt).toLocaleDateString()}</span>
                  

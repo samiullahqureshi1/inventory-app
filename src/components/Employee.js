@@ -10,6 +10,8 @@ const AddEmployee = () => {
     designation: "",
     department: "",
     joiningDate: "",
+    birthDate: "", // New field
+    age: "", // New field
     salary: 0,
     address: "",
     status: "Active", // Default status
@@ -182,7 +184,44 @@ const AddEmployee = () => {
             required
           />
         </div>
-
+        <div className="form-group">
+          <label className="form-label">Age</label>
+          <input
+            type="number"
+            name="age"
+            value={formData.age}
+            onChange={handleInputChange}
+            placeholder="Enter age"
+            style={{
+              width: "100%",
+              padding: "8px",
+              border: "1px solid #242b37",
+              borderRadius: "4px",
+              fontSize: "14px",
+              marginBottom: "10px",
+            }}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Birth Date</label>
+          <input
+            type="date"
+            name="birthDate"
+            value={formData.birthDate}
+            onChange={handleInputChange}
+            placeholder="Enter birth date"
+            style={{
+              width: "100%",
+              padding: "8px",
+              border: "1px solid #242b37",
+              borderRadius: "4px",
+              fontSize: "14px",
+              marginBottom: "10px",
+            }}
+            required
+          />
+        </div>
         <div className="form-group">
           <label className="form-label">Salary</label>
           <input

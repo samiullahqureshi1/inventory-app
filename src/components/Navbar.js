@@ -157,9 +157,13 @@ const Navbar = () => {
     </div>
 
       {/* Dashboard Section */}
+      
       <div className="dashboard-section">
         <p className="dashboard-text">Dashboard</p>
         <div className="buttons-container">
+           <Link to="/epired">
+                      <button className="action-btn" style={{fontSize:'10px'}}>Expired Product</button>
+                    </Link>
           {/* <button className="action-btn">Contact Help</button>
           <button className="action-btn">Quick Action</button> */}
         </div>
