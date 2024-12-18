@@ -88,7 +88,42 @@ const Sales = () => {
   };
 
 
- 
+  const handleCancelOrder = async (orderId) => {
+    try {
+      const response = await fetch(
+        `https://inventory-app-b.vercel.app/product/orderupdatecancell/${orderId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: "Cancelled" }),
+        }
+      );
+
+      if (response.ok) {
+        // Update UI after the status change
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === orderId
+              ? { ...product, status: "Cancelled" }
+              : product
+          )
+        );
+        setAlertType("success");
+        setAlertMessage("Order marked as Cancelled!");
+      } else {
+        const data = await response.json();
+        setAlertType("error");
+        setAlertMessage(data.message || "Failed to Cancelled order.");
+      }
+    } catch (error) {
+      setAlertType("error");
+      setAlertMessage("Error updating order. Please try again.");
+    } finally {
+      setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
+    }
+  };
 
  
   return (
@@ -161,6 +196,9 @@ const Sales = () => {
           <Link to='/order-completed'><button className="new-button">Delivered</button></Link>
           <Link to='/order-proccessing'><button className="new-button">Proccessing</button></Link>
           <Link to='/order-pending'><button className="new-button">Pending</button></Link>
+          <Link to="/order-cancell">
+                      <button className="new-button">Cancell</button>
+                    </Link>
         </div>
         <div className="action">
           <div className="search-bars">

@@ -143,6 +143,42 @@ const Proccessing = () => {
       setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
     }
   };
+  const handleCancelOrder = async (orderId) => {
+    try {
+      const response = await fetch(
+        `https://inventory-app-b.vercel.app/product/orderupdatecancell/${orderId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: "Cancelled" }),
+        }
+      );
+
+      if (response.ok) {
+        // Update UI after the status change
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === orderId
+              ? { ...product, status: "Cancelled" }
+              : product
+          )
+        );
+        setAlertType("success");
+        setAlertMessage("Order marked as Cancelled!");
+      } else {
+        const data = await response.json();
+        setAlertType("error");
+        setAlertMessage(data.message || "Failed to Cancelled order.");
+      }
+    } catch (error) {
+      setAlertType("error");
+      setAlertMessage("Error updating order. Please try again.");
+    } finally {
+      setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
+    }
+  };
 
   
   return (
@@ -226,6 +262,9 @@ const Proccessing = () => {
           <Link to="/order-pending">
             <button className="new-button">Pending</button>
           </Link>
+          <Link to="/order-cancell">
+            <button className="new-button">Cancell</button>
+          </Link>
         </div>
         <div className="action">
           <div className="search-bars">
@@ -284,8 +323,33 @@ const Proccessing = () => {
                   <button
                     className="complete-button"
                     onClick={() => handleCompleteOrder(product._id)}
+                    style={{
+                      backgroundColor: 'green',
+                      width: '4%',
+                      height: '25px', // Height define karein taake button ka size consistent ho
+                      display: 'flex', // Flexbox use karein centering ke liye
+                      justifyContent: 'center', // Horizontal center
+                      alignItems: 'center', // Vertical center
+                      textAlign: 'center', // Text alignment center
+                    }}
                   >
                     Delivered
+                  </button>{" "}
+
+                  <button
+                    className="complete-button"
+                    onClick={() => handleCancelOrder(product._id)}
+                    style={{
+                      backgroundColor: 'red',
+                      width: '4%',
+                      height: '25px', // Height define karein taake button ka size consistent ho
+                      display: 'flex', // Flexbox use karein centering ke liye
+                      justifyContent: 'center', // Horizontal center
+                      alignItems: 'center', // Vertical center
+                      textAlign: 'center', // Text alignment center
+                    }}
+                  >
+                    Cancell
                   </button>{" "}
                 </div>
               </div>

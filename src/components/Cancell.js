@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Inventory.css";
 import { Link } from "react-router-dom";
 
-const Pending = () => {
+const Cancell = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -13,8 +13,6 @@ const Pending = () => {
   const [isEditing, setIsEditing] = useState(false); // Track if editing a product
   const [isOpen, setIsOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState(null); // Track the active product for options
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [formData, setFormData] = useState({
     product_name: "", // Corrected field name
     quantity: 0, // Corrected field name
@@ -30,7 +28,7 @@ const Pending = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          "https://inventory-app-b.vercel.app/product/getorderpending"
+          "https://inventory-app-b.vercel.app/product/getcancelorder"
         );
         const text = await response.text();
         console.log(text);
@@ -181,16 +179,8 @@ const Pending = () => {
       setTimeout(() => setAlertMessage(null), 3000); // Hide alert after 3 seconds
     }
   };
-  const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
 
-    // Filter products based on the search query
-    const filtered = products.filter((product) =>
-      product.product?.toLowerCase().includes(query)
-    );
-    setFilteredProducts(filtered);
-  };
+  
   return (
     <div>
       {/* Navbar */}
@@ -273,17 +263,12 @@ const Pending = () => {
             <button className="new-button">Pending</button>
           </Link>
           <Link to="/order-cancell">
-                      <button className="new-button">Cancell</button>
-                    </Link>
+            <button className="new-button">Cancell</button>
+          </Link>
         </div>
         <div className="action">
-        <div className="search-bars">
-            <input
-              type="text"
-              placeholder="Search product..."
-              value={searchQuery}
-              onChange={handleSearch}
-            />
+          <div className="search-bars">
+            <input type="text" placeholder="Search product..." />
             <button className="search-icons">🔍</button>
           </div>
           <Link to={"/add-order"}>
@@ -335,12 +320,22 @@ const Pending = () => {
                   </span>
                   <span className="product-price">Date:{new Date(product.createdAt).toLocaleDateString()}</span>
 
-                  <button
+                  {/* <button
                     className="complete-button"
                     onClick={() => handleCompleteOrder(product._id)}
+                    style={{
+                      backgroundColor: 'green',
+                      width: '4%',
+                      height: '25px', // Height define karein taake button ka size consistent ho
+                      display: 'flex', // Flexbox use karein centering ke liye
+                      justifyContent: 'center', // Horizontal center
+                      alignItems: 'center', // Vertical center
+                      textAlign: 'center', // Text alignment center
+                    }}
                   >
                     Delivered
                   </button>{" "}
+
                   <button
                     className="complete-button"
                     onClick={() => handleCancelOrder(product._id)}
@@ -355,7 +350,7 @@ const Pending = () => {
                     }}
                   >
                     Cancell
-                  </button>{" "}
+                  </button>{" "} */}
                 </div>
               </div>
 
@@ -383,5 +378,5 @@ const Pending = () => {
   );
 };
 
-export default Pending;
+export default Cancell;
 
