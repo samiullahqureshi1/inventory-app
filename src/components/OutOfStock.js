@@ -248,11 +248,11 @@ const OutStock = () => {
         ) : (
           products.map((product) => (
             <div className="product-card" key={product._id}>
-              <img
+              {/* <img
                 src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/150"}
                 alt={product.product_name}
                 className="product-image"
-              />
+              /> */}
               <div className="product-details">
                 <h3 className="product-name">{product.product_name || "Unnamed Product"}</h3>
                 <div className="product-info">

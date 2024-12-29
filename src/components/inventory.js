@@ -21,6 +21,7 @@ const Inventory = () => {
     discription: "",  // Corrected field name
     images: [],
     expiry_date: "",
+    unit:""
   });
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -91,6 +92,8 @@ const Inventory = () => {
       price: productToEdit.price || 0,
       category:productToEdit.category || "",
       discription: productToEdit.discription || "",
+      unit: productToEdit.unit || "",
+
       expiry_date:productToEdit.expiry_date || '',
       images: [] // No need to populate images?, as they aren't directly editable
     });
@@ -203,6 +206,7 @@ const Inventory = () => {
     newProductData.append("discription", formData.discription);
     newProductData.append("category", formData.category);
     newProductData.append("expiry_date", formData.expiry_date); // Include expiry_date
+    newProductData.append("unit", formData.unit);
 
     formData.images?.forEach((image) => {
       newProductData.append("images", image);
@@ -349,7 +353,9 @@ const Inventory = () => {
                       {product?.in_stock ? "In Stock" : "Out of Stock"}
                     </span>
                   </span>
-                  <span className="product-quantity">Quantity: {product?.quantity || 0}</span>
+                  <span className="product-quantity">
+  Quantity: {`${product?.quantity || 0} ${product?.unit || ''}`}
+</span>
                   <span className="product-price">Price: ฿{product?.price || "N/A"}</span>
                   <span className="product-price">ExpiresAt: {formatDate(product?.expiry_date) }</span>
 
@@ -443,6 +449,23 @@ const Inventory = () => {
                       type="number"
                       value={formData.quantity}
                       onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '8px',
+                        border: '1px solid #242b37',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  </div>
+                  <div className="custom-form-group">
+                    <label>Unit(kg,liter,gram)</label>
+                    <input
+                      type="text"
+                      placeholder="Enter unit"
+                      value={formData.unit} // Corrected field name
+                      onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
                       style={{
                         width: '100%',
                         padding: '8px',

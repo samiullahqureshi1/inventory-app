@@ -207,16 +207,16 @@ const Navbar = () => {
             dataLength={products.length}
             // next={fetchMoreProducts}
             hasMore={hasMore}
-            loader={<h4 style={{ color: "white", textAlign: "center" }}>Loading...</h4>}
+            loader={<h4 style={{ color: "white", textAlign: "center" }}></h4>}
             endMessage={<p style={{ color: "white", textAlign: "center" }}>No more products to display!</p>}
           >
             {products.map((product) => (
               <div className="product-card" key={product._id}>
-                  <img
+                  {/* <img
                 src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/150"}
                 alt={product.product_name}
                 className="product-image"
-              />
+              /> */}
                 <div className="product-details">
                   <h4 className="product-name">{product.product_name}</h4>
                   <p className="product-info">
